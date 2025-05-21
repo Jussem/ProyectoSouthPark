@@ -6,8 +6,10 @@ package autonoma.deadlycode.exceptions;
 
 /**
  *
- * @author crist
+ * @author Asus
  */
-public class Exceptions {
-    
+public class EsperarTurnoException extends RuntimeException {
+    public EsperarTurnoException (){
+        System.out.println("No puedes realizar ninguna accion, espera tu turno");
+    }
 }

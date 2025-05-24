@@ -2,6 +2,7 @@ package autonoma.deadlycode.elements;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 /**
  * Clase base abstracta para representar elementos gráficos del juego,
@@ -27,7 +28,7 @@ public abstract class Sprite {
 
     /** Color con el que se dibuja el sprite. */
     protected Color color;
-
+    protected BufferedImage imagen;
     /**
      * Crea un nuevo sprite con su posición, tamaño y color inicial.
      *

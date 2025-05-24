@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
  *
  * @author Asus
  */
-public class Jugador extends SpriteMobile {
+public class Jugador extends Sprite {
     private int maxAnchoPantalla;
     private int maxAltoPantalla;
     public static final int STEP = 10;
@@ -20,6 +20,8 @@ public class Jugador extends SpriteMobile {
     private int maxY;
     /** Referencia al campo de batalla donde actúa el soldado. */
     private CampoDeBatalla campo;
+    
+    
     
     public Jugador(int x, int y, int width, int height, Color color) {
         super(x, y, width, height, color);

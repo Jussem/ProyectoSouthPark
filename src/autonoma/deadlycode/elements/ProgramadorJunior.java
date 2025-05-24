@@ -6,9 +6,9 @@ import java.awt.Color;
  *
  * @author Asus
  */
-public class JSenior extends Personaje {
+public class ProgramadorJunior extends Personaje {
     
-    public JSenior(int x, int y, int width, int height, Color color) {
+    public ProgramadorJunior(int x, int y, int width, int height, Color color) {
         super(x, y, width, height, color);
     }
     

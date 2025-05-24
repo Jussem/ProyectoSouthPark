@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
  *
  * @author Asus
  */
-public class Jugador extends Sprite {
+public class JugadorCartman extends Sprite {
     private int maxAnchoPantalla;
     private int maxAltoPantalla;
     public static final int STEP = 10;
@@ -23,7 +23,7 @@ public class Jugador extends Sprite {
     
     
     
-    public Jugador(int x, int y, int width, int height, Color color) {
+    public JugadorCartman(int x, int y, int width, int height, Color color) {
         super(x, y, width, height, color);
         try {
             imagen = ImageIO.read(getClass().getResource("/autonoma/deadlycode/images/JugadorCaminando.png"));
@@ -64,7 +64,7 @@ public class Jugador extends Sprite {
     }
 //    public VentanaPrincipal() {
 //        // ... inicialización de componentes ...
-//        jugador = new Jugador(100, 100, 50, 50, Color.BLUE);
+//        jugador = new JugadorCartman(100, 100, 50, 50, Color.BLUE);
 //        jugador.inicializarLimites(getContentPane().getWidth(), getContentPane().getHeight());
 //    }
     

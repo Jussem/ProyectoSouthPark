@@ -28,7 +28,7 @@ public class CampoDeBatalla {
     // Puntaje actual del jugador
     private int puntaje;
     //Jugador que se mueve en el campo de batalla
-    private Jugador jugador;
+    private JugadorCartman jugador;
     public CampoDeBatalla(String rutaArchivo) throws IOException {
         this.archivoPuntajes = new File(rutaArchivo);
         if (!this.archivoPuntajes.exists()) {

@@ -10,8 +10,8 @@ import javax.imageio.ImageIO;
  * @author Asus
  */
 public class JugadorCartman extends Sprite {
-    private int maxAnchoPantalla;
-    private int maxAltoPantalla;
+    
+    private int pocionesRestantes = 3;
     public static final int STEP = 10;
     /** Límite máximo en X dentro del campo. */
     private int maxX;
@@ -20,11 +20,15 @@ public class JugadorCartman extends Sprite {
     private int maxY;
     /** Referencia al campo de batalla donde actúa el soldado. */
     private CampoDeBatalla campo;
+    private int vida;
     
     
     
     public JugadorCartman(int x, int y, int width, int height, Color color) {
         super(x, y, width, height, color);
+        cargarImagen();
+    }
+    private void cargarImagen() {
         try {
             imagen = ImageIO.read(getClass().getResource("/autonoma/deadlycode/images/JugadorCaminando.png"));
         } catch (IOException e) {
@@ -33,15 +37,11 @@ public class JugadorCartman extends Sprite {
     }
     public void dibujar(Graphics g) {
         g.drawImage(imagen, x, y, 50, 50, null);
+        g.setColor(Color.RED);
+        g.fillRect(x, y - 10, width * vida / 100, 5);
     }
     public void mover(java.awt.event.KeyEvent e) {
         switch (e.getKeyCode()) {
-            case java.awt.event.KeyEvent.VK_UP:
-                y -= STEP;
-                break;
-            case java.awt.event.KeyEvent.VK_DOWN:
-                y += STEP;
-                break;
             case java.awt.event.KeyEvent.VK_LEFT:
                 x -= STEP;
                 break;
@@ -58,14 +58,27 @@ public class JugadorCartman extends Sprite {
         this.x = (maxX - width) / 2;
         this.y = (maxY - height) / 2;
     }
-    private void mantenerDentroDeLimites() {
-        x = Math.max(0, Math.min(x, maxAnchoPantalla - width));
-        y = Math.max(0, Math.min(y, maxAltoPantalla - height));
-    }
 //    public VentanaPrincipal() {
 //        // ... inicialización de componentes ...
 //        jugador = new JugadorCartman(100, 100, 50, 50, Color.BLUE);
 //        jugador.inicializarLimites(getContentPane().getWidth(), getContentPane().getHeight());
 //    }
+    public void atacar(Personaje enemigo) {
+        enemigo.recibirDanio(20); // Ataque normal
+    }
+
+    public void HolaMundo(Personaje enemigo) {
+        enemigo.recibirDanio(35); // Ataque especial
+    }
+     public void curar() {
+        if (pocionesRestantes > 0) {
+            this.vida = Math.min(vida + 50, 100);
+            pocionesRestantes--;
+        }
+    }
+    
+    public boolean tienePociones() {
+        return pocionesRestantes > 0;
+    }
     
 }

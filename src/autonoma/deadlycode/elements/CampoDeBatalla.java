@@ -10,12 +10,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import static javax.swing.Spring.height;
+import static javax.swing.Spring.width;
 
 /**
  *
  * @author Asus
  */
 public class CampoDeBatalla {
+        
     // Archivo donde se guardan los puntajes
     private File archivoPuntajes;
     
@@ -36,11 +39,10 @@ public class CampoDeBatalla {
         }
         this.lector = new LectorArchivoTextoPlano();
         this.escritor = new EscritorArchivoTextoPlano(rutaArchivo);
-//        this.pulgasNormales = new ArrayList<>();
-//        this.pulgasMutantes = new ArrayList<>();
+        
         this.maxX = 700;
         this.maxY = 500;
-//      this.puntaje = 0;
+        this.puntaje = 0;
     }
     public void setBounds(int maxX, int maxY) {
         this.maxX = maxX;
@@ -61,19 +63,30 @@ public class CampoDeBatalla {
     }
          */
     }
-    public void handleKey(KeyEvent e)throws IOException{
+    public void handleKey(KeyEvent e) throws IOException {
+        if (jugador == null) return; // Protección contra null pointer
+
         switch (e.getKeyCode()) {
-            case VK_Q:
-                break;
-            case KeyEvent.VK_UP:
-            case KeyEvent.VK_DOWN:
             case KeyEvent.VK_LEFT:
             case KeyEvent.VK_RIGHT:
-                if (jugador != null) {
-                    jugador.mover(e);
+                jugador.mover(e);
+                break;
+                
+            case KeyEvent.VK_H: 
+                if (jugador.tienePociones()) {
+                    jugador.curar();
                 }
                 break;
-            
+                
+            case KeyEvent.VK_Z:
+                break;
+                
+            case KeyEvent.VK_X: 
+                break;
+                
+            case KeyEvent.VK_Q:
+                terminarSimulacion(e);
+                break;
         }
     }
     public void terminarSimulacion(KeyEvent e) throws IOException {

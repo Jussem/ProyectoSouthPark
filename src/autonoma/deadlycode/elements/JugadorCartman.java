@@ -26,6 +26,7 @@ public class JugadorCartman extends Sprite {
     
     public JugadorCartman(int x, int y, int width, int height, Color color) {
         super(x, y, width, height, color);
+        this.vida=100;
         cargarImagen();
     }
     private void cargarImagen() {

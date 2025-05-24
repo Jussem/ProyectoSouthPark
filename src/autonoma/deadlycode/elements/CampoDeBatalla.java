@@ -14,24 +14,45 @@ import static javax.swing.Spring.height;
 import static javax.swing.Spring.width;
 
 /**
- *
- * @author Asus
+ * Representa el área principal de juego donde interactúan el jugador y los enemigos.
+ * Gestiona los límites del escenario, el control de teclado, y el sistema de puntuación.
+ * 
+ * @author Juan Sebastian Lopez Guzman
+ * @author Cristian Camilo Salazar Arenas
+ * @author Juan Jose Morales
+ * @version 1.0
+ * @since 2023
  */
 public class CampoDeBatalla {
         
-    // Archivo donde se guardan los puntajes
+        /** Archivo donde se persisten los puntajes históricos */
     private File archivoPuntajes;
     
-    // Objetos para lectura y escritura de archivos
+    /** Componente para lectura de archivos */
     private final Lector lector;
+    
+    /** Componente para escritura de archivos */
     private final Escritor escritor;
-    // Dimensiones máximas del campo
+    
+    /** Límite horizontal del campo */
     private int maxX;
+    
+    /** Límite vertical del campo */
     private int maxY;
-    // Puntaje actual del jugador
+    
+    /** Puntaje acumulado en la partida actual */
     private int puntaje;
-    //Jugador que se mueve en el campo de batalla
+    
+    /** Referencia al jugador principal */
     private JugadorCartman jugador;
+    
+    /**
+     * Crea un nuevo campo de batalla con archivo de persistencia de puntajes.
+     * Inicializa las dimensiones predeterminadas (700x500) y puntaje en cero.
+     * 
+     * @param rutaArchivo Ruta del archivo para guardar los puntajes
+     * @throws IOException Si ocurre un error al crear/leer el archivo
+     */
     public CampoDeBatalla(String rutaArchivo) throws IOException {
         this.archivoPuntajes = new File(rutaArchivo);
         if (!this.archivoPuntajes.exists()) {
@@ -44,6 +65,13 @@ public class CampoDeBatalla {
         this.maxY = 500;
         this.puntaje = 0;
     }
+    /**
+     * Establece los nuevos límites del campo y actualiza los límites
+     * de todos los elementos contenidos.
+     * 
+     * @param maxX Nuevo límite horizontal
+     * @param maxY Nuevo límite vertical
+     */
     public void setBounds(int maxX, int maxY) {
         this.maxX = maxX;
         this.maxY = maxY;
@@ -53,16 +81,16 @@ public class CampoDeBatalla {
             this.jugador.inicializarLimites(maxX, maxY);
         }
 
-        // Si tienes las listas de enemigos, actualiza sus límites también
-        /*
-    for (PulgaNormal pulga : pulgasNormales) {
-        pulga.inicializarLimites(maxX, maxY);
     }
-    for (PulgaMutante pulga : pulgasMutantes) {
-        pulga.inicializarLimites(maxX, maxY);
-    }
-         */
-    }
+    /**
+     * Procesa los eventos de teclado para controlar al jugador:
+     * - Movimiento (teclas direccionales)
+     * - Curación (tecla H)
+     * - Terminar simulación (tecla Q)
+     * 
+     * @param e Evento de tecla presionada
+     * @throws IOException Si falla la persistencia al terminar
+     */
     public void handleKey(KeyEvent e) throws IOException {
         if (jugador == null) return; // Protección contra null pointer
 
@@ -89,6 +117,13 @@ public class CampoDeBatalla {
                 break;
         }
     }
+    /**
+     * Finaliza la partida actual guardando el puntaje y reiniciando
+     * el contador para una nueva partida.
+     * 
+     * @param e Evento de tecla que activó la terminación
+     * @throws IOException Si falla la persistencia del puntaje
+     */
     public void terminarSimulacion(KeyEvent e) throws IOException {
         if (e.getKeyCode() == KeyEvent.VK_Q) {
 //          detenerPulgas();
@@ -96,6 +131,13 @@ public class CampoDeBatalla {
             this.puntaje = 0;
         }
     }
+    /**
+     * Persiste un nuevo puntaje en el archivo histórico,
+     * manteniendo solo los 10 mejores puntajes.
+     * 
+     * @param nuevoPuntaje Puntaje a guardar
+     * @throws IOException Si falla la operación de archivo
+     */
     public void guardarPuntaje(int nuevoPuntaje) throws IOException {
         ArrayList<String> lineas = lector.leer(archivoPuntajes.getPath());
         ArrayList<Integer> puntajes = new ArrayList<>();
@@ -123,6 +165,12 @@ public class CampoDeBatalla {
 
         escritor.escribir(nuevasLineas, archivoPuntajes.getPath());
     }
+    /**
+     * Recupera los puntajes históricos ordenados descendentemente.
+     * 
+     * @return Lista de los mejores puntajes
+     * @throws IOException Si falla la lectura del archivo
+     */
     public ArrayList<Integer> leerPuntajes() throws IOException {
         ArrayList<String> lineas = lector.leer(archivoPuntajes.getPath());
         ArrayList<Integer> puntajes = new ArrayList<>();
@@ -140,6 +188,11 @@ public class CampoDeBatalla {
         Collections.sort(puntajes, Collections.reverseOrder());
         return puntajes;
     }
+    /**
+     * Incrementa el puntaje actual de la partida.
+     * 
+     * @param puntos Cantidad a sumar al puntaje
+     */
     public void aumentarPuntaje(int puntos) { 
         puntaje += puntos; 
     }

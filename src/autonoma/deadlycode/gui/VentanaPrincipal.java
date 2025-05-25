@@ -3,7 +3,15 @@ package autonoma.deadlycode.gui;
 import autonoma.deadlycode.elements.CampoDeBatalla;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -44,6 +52,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         Jugartxt = new javax.swing.JLabel();
         PanelSalir = new javax.swing.JPanel();
         Salirtxt = new javax.swing.JLabel();
+        TheDeadlyCodeTitulolbl = new javax.swing.JLabel();
+        Llamaslbl = new javax.swing.JLabel();
+        Llamaslbl1 = new javax.swing.JLabel();
+        Llamaslbl2 = new javax.swing.JLabel();
+        Llamaslbl3 = new javax.swing.JLabel();
         Menulbl = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -90,7 +103,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addComponent(PuntajeGuioneslbl, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(Puntajelbl, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(489, Short.MAX_VALUE))
         );
 
         PanelComando.setBackground(new java.awt.Color(51, 0, 51));
@@ -225,6 +238,21 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jPanel2.add(PanelSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 600, 300, 50));
 
+        TheDeadlyCodeTitulolbl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autonoma/deadlycode/images/TheDeadlyCodeTitulo.png"))); // NOI18N
+        jPanel2.add(TheDeadlyCodeTitulolbl, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 50, 374, 254));
+
+        Llamaslbl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autonoma/deadlycode/images/Flames.png"))); // NOI18N
+        jPanel2.add(Llamaslbl, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 410, -1, 60));
+
+        Llamaslbl1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autonoma/deadlycode/images/Flames.png"))); // NOI18N
+        jPanel2.add(Llamaslbl1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 510, -1, 60));
+
+        Llamaslbl2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autonoma/deadlycode/images/Flames.png"))); // NOI18N
+        jPanel2.add(Llamaslbl2, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 150, -1, 60));
+
+        Llamaslbl3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autonoma/deadlycode/images/Flames.png"))); // NOI18N
+        jPanel2.add(Llamaslbl3, new org.netbeans.lib.awtextra.AbsoluteConstraints(990, 150, -1, 60));
+
         Menulbl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autonoma/deadlycode/images/MenuPrincipal.jpg"))); // NOI18N
         Menulbl.setPreferredSize(new java.awt.Dimension(1200, 700));
         jPanel2.add(Menulbl, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1100, 770));
@@ -246,7 +274,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(PanelComando, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(PanelPuntaje, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE))
+                .addComponent(PanelPuntaje, javax.swing.GroupLayout.DEFAULT_SIZE, 858, Short.MAX_VALUE))
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
@@ -270,31 +298,91 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_PanelSalirMouseExited
 
     private void PanelJugarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelJugarMouseClicked
-        // TODO add your handling code here:
+        try {
+            InputStream audioStream = getClass().getResourceAsStream("/autonoma/deadlycode/sounds/voice_Timmy.wav");
+            if (audioStream == null) {
+                JOptionPane.showMessageDialog(this, "Archivo no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            final Clip clip = AudioSystem.getClip();
+            clip.open(AudioSystem.getAudioInputStream(audioStream));
+            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-15.0f);
+            clip.addLineListener(new LineListener() {
+                @Override
+                public void update(LineEvent event) {
+                    if (event.getType() == LineEvent.Type.STOP) {
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                VentanaPrincipal.this.dispose();
+                                VentanaMundo ventana = new VentanaMundo(VentanaPrincipal.this, true);
+                                ventana.setVisible(true);
+                            }
+                        });
+                        clip.close();
+                    }
+                }
+            });
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+            dispose();
+            new VentanaMundo(null, true).setVisible(true);
+        }
     }//GEN-LAST:event_PanelJugarMouseClicked
 
     private void PanelSalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelSalirMouseClicked
-        // TODO add your handling code here:
+        try {
+            InputStream audioStream = getClass().getResourceAsStream("/autonoma/deadlycode/sounds/voicy_Errrrrr.wav");
+            if (audioStream == null) {
+                JOptionPane.showMessageDialog(this, "Archivo no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            final Clip clip = AudioSystem.getClip();
+            clip.open(AudioSystem.getAudioInputStream(audioStream));
+            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-15.0f);
+            clip.addLineListener(new LineListener() {
+                @Override
+                public void update(LineEvent event) {
+                    if (event.getType() == LineEvent.Type.STOP) {
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                VentanaPrincipal.this.dispose();
+                            }
+                        });
+                        clip.close();
+                    }
+                }
+            });
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+            dispose();
+        }
     }//GEN-LAST:event_PanelSalirMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ComandoGuioneslbl;
     private javax.swing.JLabel Comandolbl;
-    private javax.swing.JLabel Comandoslbl7;
     private javax.swing.JLabel Jugartxt;
+    private javax.swing.JLabel Llamaslbl;
+    private javax.swing.JLabel Llamaslbl1;
+    private javax.swing.JLabel Llamaslbl2;
+    private javax.swing.JLabel Llamaslbl3;
     private javax.swing.JLabel Menulbl;
     private javax.swing.JPanel PanelComando;
     private javax.swing.JPanel PanelJugar;
     private javax.swing.JPanel PanelPuntaje;
-    private javax.swing.JPanel PanelPuntajes1;
     private javax.swing.JPanel PanelSalir;
     private javax.swing.JLabel PuntajeGuioneslbl;
     private javax.swing.JLabel Puntajelbl;
-    private javax.swing.JLabel Puntajeslbl1;
     private javax.swing.JLabel Salirtxt;
+    private javax.swing.JLabel TheDeadlyCodeTitulolbl;
     private javax.swing.JLabel TituloComandolbl;
     private javax.swing.JLabel TituloPuntajelbl;
-    private javax.swing.JLabel TituloPuntajeslbl1;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
 }

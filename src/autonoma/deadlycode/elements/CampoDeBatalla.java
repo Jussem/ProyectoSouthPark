@@ -4,6 +4,7 @@ import autonoma.deadlycode.models.Escritor;
 import autonoma.deadlycode.models.EscritorArchivoTextoPlano;
 import autonoma.deadlycode.models.Lector;
 import autonoma.deadlycode.models.LectorArchivoTextoPlano;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import static java.awt.event.KeyEvent.VK_Q;
 import java.io.File;
@@ -25,7 +26,7 @@ import static javax.swing.Spring.width;
  */
 public class CampoDeBatalla {
         
-        /** Archivo donde se persisten los puntajes históricos */
+    /** Archivo donde se persisten los puntajes históricos */
     private File archivoPuntajes;
     
     /** Componente para lectura de archivos */
@@ -60,10 +61,12 @@ public class CampoDeBatalla {
         }
         this.lector = new LectorArchivoTextoPlano();
         this.escritor = new EscritorArchivoTextoPlano(rutaArchivo);
-        
+
         this.maxX = 700;
         this.maxY = 500;
         this.puntaje = 0;
+        this.jugador = new JugadorCartman(15, 40, 120, 170, Color.RED);
+        this.jugador.inicializarLimites(this.maxX, this.maxY);
     }
     /**
      * Establece los nuevos límites del campo y actualiza los límites
@@ -86,20 +89,19 @@ public class CampoDeBatalla {
      * Procesa los eventos de teclado para controlar al jugador:
      * - Movimiento (teclas direccionales)
      * - Curación (tecla H)
-     * - Terminar simulación (tecla Q)
      * 
      * @param e Evento de tecla presionada
      * @throws IOException Si falla la persistencia al terminar
      */
-    public void handleKey(KeyEvent e) throws IOException {
-        if (jugador == null) return; // Protección contra null pointer
-
+    public void handleKey(KeyEvent e) throws IOException{
+        if (jugador == null) {
+            return;
+        }
         switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT:
             case KeyEvent.VK_RIGHT:
                 jugador.mover(e);
                 break;
-                
             case KeyEvent.VK_H: 
                 if (jugador.tienePociones()) {
                     jugador.curar();
@@ -110,10 +112,6 @@ public class CampoDeBatalla {
                 break;
                 
             case KeyEvent.VK_X: 
-                break;
-                
-            case KeyEvent.VK_Q:
-                terminarSimulacion(e);
                 break;
         }
     }
@@ -195,5 +193,9 @@ public class CampoDeBatalla {
      */
     public void aumentarPuntaje(int puntos) { 
         puntaje += puntos; 
+        
     }
-}
+    public JugadorCartman getJugador() {
+        return this.jugador;
+    }
+}   

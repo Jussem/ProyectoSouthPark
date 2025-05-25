@@ -65,7 +65,7 @@ public class JugadorCartman extends Sprite {
      * @param g Contexto gráfico donde se dibujará
      */
     public void dibujar(Graphics g) {
-        g.drawImage(imagen, x, y, 50, 50, null);
+        g.drawImage(imagen, x, y, 90, 100, null); 
         g.setColor(Color.RED);
         g.fillRect(x, y - 10, width * vida / 100, 5);
     }
@@ -130,6 +130,14 @@ public class JugadorCartman extends Sprite {
      */
     public boolean tienePociones() {
         return pocionesRestantes > 0;
+    }
+    //Getters
+    public int getPosX() {
+        return this.x;
+    }
+
+    public int getPosY() {
+        return this.y;
     }
     
 }

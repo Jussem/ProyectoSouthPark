@@ -4,6 +4,8 @@
  */
 package autonoma.deadlycode.main;
 
+import autonoma.deadlycode.gui.VentanaMundo;
+
 /**
  *
  * @author crist
@@ -14,7 +16,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        VentanaMundo ventana = new VentanaMundo(null, false);
+        ventana.setVisible(true);
     }
     
 }

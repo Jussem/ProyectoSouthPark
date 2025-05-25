@@ -11,6 +11,11 @@ import autonoma.deadlycode.elements.ProgramadorJunior;
 import autonoma.deadlycode.elements.ProgramadorSenior;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.io.InputStream;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -20,6 +25,7 @@ import javax.swing.Timer;
  * @author Asus
  */
 public class VentanaPelea extends javax.swing.JDialog {
+    private Clip musicaFondo;
 
     private final String[] fondos = {
         "/autonoma/deadlycode/images/fondoPelea1.jpg",
@@ -42,12 +48,33 @@ public class VentanaPelea extends javax.swing.JDialog {
     public VentanaPelea(java.awt.Frame parent, boolean modal, JugadorCartman jugador) {
         super(parent, modal);
         initComponents();
+        iniciarMusicaFondo();
         this.jugador = jugador;
         this.turnoJugador = true;
         inicializarEnemigos();
         cargarFase(faseActual);
         lblJugador.requestFocusInWindow();
         
+    }
+    private void iniciarMusicaFondo() {
+        try {
+            InputStream audioStream = getClass().getResourceAsStream("/autonoma/deadlycode/sounds/musica_fondo_3.wav");
+            AudioInputStream ais = AudioSystem.getAudioInputStream(audioStream);
+            musicaFondo = AudioSystem.getClip();
+            musicaFondo.open(ais);
+            FloatControl gainControl = (FloatControl) musicaFondo.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-20.0f);
+            musicaFondo.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception e) {
+            System.err.println("Error al cargar música de fondo: " + e.getMessage());
+        }
+    }
+
+    private void detenerMusica() {
+        if (musicaFondo != null && musicaFondo.isRunning()) {
+            musicaFondo.stop();
+            musicaFondo.close();
+        }
     }
     private void inicializarEnemigos() {
         enemigosFases = new Personaje[]{
@@ -158,7 +185,7 @@ public class VentanaPelea extends javax.swing.JDialog {
                     "¡Has sido derrotado!",
                     "Game Over",
                     JOptionPane.ERROR_MESSAGE);
-            this.dispose();
+            System.exit(0);
         } else {
             turnoJugador = true; 
             actualizarEstado();
@@ -173,6 +200,7 @@ public class VentanaPelea extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         lblEnemigo = new javax.swing.JLabel();
         lblJugador = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
         lblEstado = new javax.swing.JLabel();
         lblFondo = new javax.swing.JLabel();
 
@@ -183,7 +211,7 @@ public class VentanaPelea extends javax.swing.JDialog {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblEnemigo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autonoma/deadlycode/images/ProgramadorJunior.png"))); // NOI18N
-        jPanel1.add(lblEnemigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 170, -1, -1));
+        jPanel1.add(lblEnemigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 160, -1, -1));
 
         lblJugador.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autonoma/deadlycode/images/CartmanPelea.png"))); // NOI18N
         lblJugador.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -191,20 +219,42 @@ public class VentanaPelea extends javax.swing.JDialog {
                 lblJugadorKeyPressed(evt);
             }
         });
-        jPanel1.add(lblJugador, new org.netbeans.lib.awtextra.AbsoluteConstraints(-110, 200, 370, 210));
+        jPanel1.add(lblJugador, new org.netbeans.lib.awtextra.AbsoluteConstraints(-120, 190, 370, 210));
 
-        lblEstado.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 3, 14)); // NOI18N
+        jPanel2.setBackground(new java.awt.Color(255, 0, 0));
+        jPanel2.setBorder(javax.swing.BorderFactory.createCompoundBorder());
+
+        lblEstado.setBackground(new java.awt.Color(0, 0, 0));
+        lblEstado.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lblEstado.setForeground(new java.awt.Color(255, 255, 255));
         lblEstado.setText("0");
-        jPanel1.add(lblEstado, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 600, 40));
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 679, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(lblEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 690, 40));
 
         lblFondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autonoma/deadlycode/images/fondoPelea1.jpg"))); // NOI18N
-        jPanel1.add(lblFondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 640, 420));
+        jPanel1.add(lblFondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 690, 410));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -265,6 +315,7 @@ public class VentanaPelea extends javax.swing.JDialog {
             actualizarEstado();
 
             if (enemigoActual.getVida() <= 0) {
+                detenerMusica();
                 siguienteFase();
             } else {
                 cambiarTurno();
@@ -275,6 +326,7 @@ public class VentanaPelea extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblEnemigo;
     private javax.swing.JLabel lblEstado;
     private javax.swing.JLabel lblFondo;

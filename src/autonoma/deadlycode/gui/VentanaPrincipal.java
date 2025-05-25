@@ -69,8 +69,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         PuntajeGuioneslbl = new javax.swing.JLabel();
         PanelComando = new javax.swing.JPanel();
         TituloComandolbl = new javax.swing.JLabel();
-        Comandolbl = new javax.swing.JLabel();
         ComandoGuioneslbl = new javax.swing.JLabel();
+        TituloComandolbl1 = new javax.swing.JLabel();
+        TituloComandolbl2 = new javax.swing.JLabel();
+        TituloComandolbl3 = new javax.swing.JLabel();
+        TituloComandolbl4 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         PanelJugar = new javax.swing.JPanel();
         Jugartxt = new javax.swing.JLabel();
@@ -108,7 +111,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         PanelPuntaje.setLayout(PanelPuntajeLayout);
         PanelPuntajeLayout.setHorizontalGroup(
             PanelPuntajeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(PuntajeGuioneslbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(PuntajeGuioneslbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PanelPuntajeLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(TituloPuntajelbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -139,28 +142,45 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         TituloComandolbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         TituloComandolbl.setText("COMANDOS");
 
-        Comandolbl.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        Comandolbl.setForeground(new java.awt.Color(255, 255, 255));
-
         ComandoGuioneslbl.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         ComandoGuioneslbl.setForeground(new java.awt.Color(255, 255, 255));
         ComandoGuioneslbl.setText("------------------------------------");
         ComandoGuioneslbl.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
+        TituloComandolbl1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        TituloComandolbl1.setForeground(new java.awt.Color(255, 255, 255));
+        TituloComandolbl1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        TituloComandolbl1.setText("Z --> ATACAR");
+
+        TituloComandolbl2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        TituloComandolbl2.setForeground(new java.awt.Color(255, 255, 255));
+        TituloComandolbl2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        TituloComandolbl2.setText("H -> CURACIÓN");
+
+        TituloComandolbl3.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        TituloComandolbl3.setForeground(new java.awt.Color(255, 255, 255));
+        TituloComandolbl3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        TituloComandolbl3.setText("Q -> SALIR");
+
+        TituloComandolbl4.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        TituloComandolbl4.setForeground(new java.awt.Color(255, 255, 255));
+        TituloComandolbl4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        TituloComandolbl4.setText("X -> PODER ESP");
+
         javax.swing.GroupLayout PanelComandoLayout = new javax.swing.GroupLayout(PanelComando);
         PanelComando.setLayout(PanelComandoLayout);
         PanelComandoLayout.setHorizontalGroup(
             PanelComandoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(ComandoGuioneslbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(ComandoGuioneslbl, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+            .addComponent(TituloComandolbl1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(PanelComandoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(TituloComandolbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(PanelComandoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(TituloComandolbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(TituloComandolbl2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(TituloComandolbl3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(TituloComandolbl4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(PanelComandoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(PanelComandoLayout.createSequentialGroup()
-                    .addGap(53, 53, 53)
-                    .addComponent(Comandolbl, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
-                    .addGap(53, 53, 53)))
         );
         PanelComandoLayout.setVerticalGroup(
             PanelComandoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,12 +189,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addComponent(TituloComandolbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ComandoGuioneslbl, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(299, Short.MAX_VALUE))
-            .addGroup(PanelComandoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(PanelComandoLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(Comandolbl, javax.swing.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE)
-                    .addContainerGap()))
+                .addGap(29, 29, 29)
+                .addComponent(TituloComandolbl1)
+                .addGap(29, 29, 29)
+                .addComponent(TituloComandolbl2)
+                .addGap(30, 30, 30)
+                .addComponent(TituloComandolbl4)
+                .addGap(30, 30, 30)
+                .addComponent(TituloComandolbl3)
+                .addContainerGap(53, Short.MAX_VALUE))
         );
 
         jPanel2.setPreferredSize(new java.awt.Dimension(1200, 700));
@@ -289,8 +312,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 1098, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(PanelPuntaje, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
-                    .addComponent(PanelComando, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE))
+                    .addComponent(PanelPuntaje, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+                    .addComponent(PanelComando, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -343,6 +366,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                                 VentanaPrincipal.this.dispose();
                                 detenerMusica();
                                 VentanaMundo ventana = new VentanaMundo(VentanaPrincipal.this, true);
+                                ventana.setLocationRelativeTo(null);
                                 ventana.setVisible(true);
                             }
                         });
@@ -393,7 +417,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ComandoGuioneslbl;
-    private javax.swing.JLabel Comandolbl;
     private javax.swing.JLabel Jugartxt;
     private javax.swing.JLabel Llamaslbl;
     private javax.swing.JLabel Llamaslbl1;
@@ -409,6 +432,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel Salirtxt;
     private javax.swing.JLabel TheDeadlyCodeTitulolbl;
     private javax.swing.JLabel TituloComandolbl;
+    private javax.swing.JLabel TituloComandolbl1;
+    private javax.swing.JLabel TituloComandolbl2;
+    private javax.swing.JLabel TituloComandolbl3;
+    private javax.swing.JLabel TituloComandolbl4;
     private javax.swing.JLabel TituloPuntajelbl;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables

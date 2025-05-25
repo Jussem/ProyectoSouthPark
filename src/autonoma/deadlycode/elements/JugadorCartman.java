@@ -22,7 +22,7 @@ public class JugadorCartman extends Personaje {
     public int usosHolaMundo = 3;
     
     /** Distancia de movimiento por paso */
-    public static final int STEP = 10;
+    public static final int STEP = 5;
     
     /** Límite máximo en el eje X del campo */
     private int maxX;
@@ -70,7 +70,7 @@ public class JugadorCartman extends Personaje {
     public void dibujar(Graphics g) {
         g.drawImage(imagen, x, y, 90, 100, null); 
         g.setColor(Color.RED);
-        g.fillRect(x, y - 10, width * vida / 100, 5);
+        g.fillRect(x, y, width * vida / 100, 5);
     }
      /**
      * Mueve al jugador según la tecla presionada, manteniéndolo dentro de los límites del campo.
@@ -87,7 +87,7 @@ public class JugadorCartman extends Personaje {
                 break;
         }
         x = Math.max(0, Math.min(x, maxX - width));
-        y = Math.max(0, Math.min(y, maxY - height));
+//        y = Math.max(0, Math.min(y, maxY - height));
     }
     /**
      * Establece los límites del campo de batalla y centra al jugador.
@@ -98,8 +98,8 @@ public class JugadorCartman extends Personaje {
     public void inicializarLimites(int maxX, int maxY) {
         this.maxX = maxX;
         this.maxY = maxY;
-        this.x = (maxX - width) / 2;
-        this.y = (maxY - height) / 2;
+//        this.x = (maxX - width) / 2;
+//        this.y = (maxY - height) / 2;
     }
     /**
      * Realiza un ataque normal contra un enemigo.

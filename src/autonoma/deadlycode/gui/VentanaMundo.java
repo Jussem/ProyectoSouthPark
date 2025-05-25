@@ -1,7 +1,6 @@
 package autonoma.deadlycode.gui;
 
 import autonoma.deadlycode.elements.CampoDeBatalla;
-import autonoma.deadlycode.elements.JugadorCartman;
 import autonoma.deadlycode.elements.Personaje;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -88,13 +87,14 @@ public class VentanaMundo extends javax.swing.JDialog {
 
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        pnlJugador.setOpaque(false);
         pnlJugador.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 pnlJugadorKeyPressed(evt);
             }
         });
 
-        lblJugador.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autonoma/deadlycode/images/JugadorCaminando.png"))); // NOI18N
+        lblJugador.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autonoma/deadlycode/images/Cartman.png"))); // NOI18N
         lblJugador.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 lblJugadorKeyPressed(evt);
@@ -194,6 +194,7 @@ public class VentanaMundo extends javax.swing.JDialog {
         this.dispose();
         detenerMusica();
         VentanaPelea ventanaPelea = new VentanaPelea(null, true, campo.getJugador());
+        ventanaPelea.setLocationRelativeTo(null);
         ventanaPelea.setVisible(true);
     }
     private void exitGame() {

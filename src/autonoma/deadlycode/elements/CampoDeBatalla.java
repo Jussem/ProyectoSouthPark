@@ -65,7 +65,7 @@ public class CampoDeBatalla {
         this.maxX = 700;
         this.maxY = 500;
         this.puntaje = 0;
-        this.jugador = new JugadorCartman(15, 40, 120, 170, Color.RED);
+        this.jugador = new JugadorCartman(32, 130, 120, 170, Color.RED);
         this.jugador.inicializarLimites(this.maxX, this.maxY);
     }
     /**

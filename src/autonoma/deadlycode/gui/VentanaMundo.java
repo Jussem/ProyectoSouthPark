@@ -32,7 +32,7 @@ public class VentanaMundo extends javax.swing.JDialog {
         }
         initComponents();
         lblJugador.setFocusable(false);  
-    lblJugador.removeKeyListener(lblJugador.getKeyListeners()[0]);
+        lblJugador.removeKeyListener(lblJugador.getKeyListeners()[0]);
         pnlJugador.setFocusable(true);
         pnlJugador.requestFocusInWindow();
     }

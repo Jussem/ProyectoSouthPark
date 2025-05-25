@@ -107,12 +107,7 @@ public class CampoDeBatalla {
                     jugador.curar();
                 }
                 break;
-                
-            case KeyEvent.VK_Z:
-                break;
-                
-            case KeyEvent.VK_X: 
-                break;
+            
         }
     }
     /**

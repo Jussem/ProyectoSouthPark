@@ -52,4 +52,7 @@ public abstract class Personaje extends Sprite{
             pocionesRestantes--;
         }
     }
+    public int getVida() {
+        return this.vida;
+    }
 }

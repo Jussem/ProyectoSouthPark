@@ -15,10 +15,11 @@ import javax.imageio.ImageIO;
  * @version 1.0
  * @since 2023
  */
-public class JugadorCartman extends Sprite {
+public class JugadorCartman extends Personaje {
     
     /** Cantidad de pociones de curación disponibles */
     private int pocionesRestantes = 3;
+    private int usosHolaMundo = 3;
     
     /** Distancia de movimiento por paso */
     public static final int STEP = 10;
@@ -45,8 +46,10 @@ public class JugadorCartman extends Sprite {
      * @param color Color representativo del personaje
      */
     public JugadorCartman(int x, int y, int width, int height, Color color) {
-        super(x, y, width, height, color);
-        this.vida=100;
+        super(x, y, width, height, color); // Llama al constructor de Personaje
+        this.vida = 100;
+        this.pocionesRestantes = 3;
+        this.usosHolaMundo = 3;
         cargarImagen();
     }
     /**
@@ -112,15 +115,21 @@ public class JugadorCartman extends Sprite {
      * @param enemigo Objetivo que recibirá el daño
      */
     public void HolaMundo(Personaje enemigo) {
-        enemigo.recibirDanio(35); // Ataque especial
+        if (usosHolaMundo > 0) {
+            enemigo.recibirDanio(35);
+            usosHolaMundo--;
+            System.out.println("Usos restantes de HolaMundo: " + usosHolaMundo);
+        } else {
+            System.out.println("¡No te quedan usos de HolaMundo!");
+        }
     }
     /**
      * Utiliza una poción para recuperar salud (50 puntos), si quedan pociones disponibles.
      */
-     public void curar() {
+    public void curar() {
         if (pocionesRestantes > 0) {
             this.vida = Math.min(vida + 50, 100);
-            pocionesRestantes--;
+            pocionesRestantes--; // Atributo heredado
         }
     }
     /**
@@ -129,7 +138,10 @@ public class JugadorCartman extends Sprite {
      * @return true si tiene pociones disponibles, false en caso contrario
      */
     public boolean tienePociones() {
-        return pocionesRestantes > 0;
+        return pocionesRestantes > 0; 
+    }
+    public boolean puedeUsarHolaMundo() {
+        return usosHolaMundo > 0;
     }
     //Getters
     public int getPosX() {
@@ -138,6 +150,9 @@ public class JugadorCartman extends Sprite {
 
     public int getPosY() {
         return this.y;
+    }
+    public int getVida() {
+        return this.vida;
     }
     
 }

@@ -61,7 +61,7 @@ public class VentanaMundo extends javax.swing.JDialog {
             musicaFondo = AudioSystem.getClip();
             musicaFondo.open(ais);
             FloatControl gainControl = (FloatControl) musicaFondo.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-20.0f);
+            gainControl.setValue(-15.0f);
             musicaFondo.loop(Clip.LOOP_CONTINUOUSLY);
         } catch (Exception e) {
             System.err.println("Error al cargar música de fondo: " + e.getMessage());

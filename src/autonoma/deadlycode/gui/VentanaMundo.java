@@ -121,7 +121,6 @@ public class VentanaMundo extends javax.swing.JDialog {
     }//GEN-LAST:event_lblJugadorKeyPressed
 
     private void pnlJugadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pnlJugadorKeyPressed
-        System.out.println("Tecla presionada: " + evt.getKeyCode());
         try {
             switch (evt.getKeyCode()) {
                 case KeyEvent.VK_LEFT:

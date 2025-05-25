@@ -130,12 +130,16 @@ public class VentanaPelea extends javax.swing.JDialog {
     }
     public void siguienteFase() {
         faseActual++;
-        if (faseActual < 3) {
-            cargarFase(faseActual);
-        } else {
-            JOptionPane.showMessageDialog(this, "¡Has ganado el juego!");
-            this.dispose();
-        }
+    if (faseActual < 3) {
+        // Cierra la ventana de pelea y regresa a VentanaMundo
+        this.dispose();
+        VentanaMundo mundo = new VentanaMundo(null, true);
+        mundo.setLocationRelativeTo(null);
+        mundo.setVisible(true);
+    } else {
+        JOptionPane.showMessageDialog(this, "¡Has ganado el juego!");
+        this.dispose();
+    }
     }
     private void mostrarEstado() {
         JOptionPane.showMessageDialog(this, 

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
 package autonoma.deadlycode.gui;
 
 import autonoma.deadlycode.elements.CampoDeBatalla;
@@ -11,8 +7,13 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.List;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.swing.JOptionPane;
 
 /**
@@ -21,6 +22,7 @@ import javax.swing.JOptionPane;
  */
 public class VentanaMundo extends javax.swing.JDialog {
 
+    private Clip musicaFondo;
     CampoDeBatalla campo;
     private List<Personaje> enemigos;
     
@@ -34,21 +36,43 @@ public class VentanaMundo extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Error al crear/cargar el archivo de puntajes", "Error", JOptionPane.ERROR_MESSAGE);
         }
         initComponents();
+        iniciarMusicaFondo();
         lblJugador.setFocusable(false);  
         lblJugador.removeKeyListener(lblJugador.getKeyListeners()[0]);
         pnlJugador.setFocusable(true);
         pnlJugador.requestFocusInWindow();
     }
+
     private boolean estaSobreEnemigo() {
         int jugadorX = pnlJugador.getX() + pnlJugador.getWidth() / 2;
         int jugadorY = pnlJugador.getY() + pnlJugador.getHeight() / 2;
-
         int enemigoX = lblPelea1.getX() + lblPelea1.getWidth() / 2;
         int enemigoY = lblPelea1.getY() + lblPelea1.getHeight() / 2;
         int rango = 50;
 
         return Math.abs(jugadorX - enemigoX) < rango
                 && Math.abs(jugadorY - enemigoY) < rango;
+    }
+    
+    private void iniciarMusicaFondo() {
+        try {
+            InputStream audioStream = getClass().getResourceAsStream("/autonoma/deadlycode/sounds/musica_fondo_2.wav");
+            AudioInputStream ais = AudioSystem.getAudioInputStream(audioStream);
+            musicaFondo = AudioSystem.getClip();
+            musicaFondo.open(ais);
+            FloatControl gainControl = (FloatControl) musicaFondo.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-20.0f);
+            musicaFondo.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception e) {
+            System.err.println("Error al cargar música de fondo: " + e.getMessage());
+        }
+    }
+    
+    private void detenerMusica(){
+        if (musicaFondo != null && musicaFondo.isRunning()) {
+            musicaFondo.stop();
+            musicaFondo.close();
+        }
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -117,7 +141,7 @@ public class VentanaMundo extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void lblJugadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lblJugadorKeyPressed
         try {
             switch (evt.getKeyCode()) {
@@ -168,6 +192,7 @@ public class VentanaMundo extends javax.swing.JDialog {
     }//GEN-LAST:event_pnlJugadorKeyPressed
     private void iniciarPelea() {
         this.dispose();
+        detenerMusica();
         VentanaPelea ventanaPelea = new VentanaPelea(null, true, campo.getJugador());
         ventanaPelea.setVisible(true);
     }

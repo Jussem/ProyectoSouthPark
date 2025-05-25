@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
@@ -18,10 +19,33 @@ import javax.swing.SwingUtilities;
  * @author crist
  */
 public class VentanaPrincipal extends javax.swing.JFrame {
+    private Clip musicaFondo;
     
     public VentanaPrincipal() throws FileNotFoundException, IOException{
         initComponents();
         this.mostrarPuntajes();
+        iniciarMusicaFondo();
+    }
+    
+    private void iniciarMusicaFondo() {
+        try {
+            InputStream audioStream = getClass().getResourceAsStream("/autonoma/deadlycode/sounds/musica_fondo.wav");
+            AudioInputStream ais = AudioSystem.getAudioInputStream(audioStream);
+            musicaFondo = AudioSystem.getClip();
+            musicaFondo.open(ais);
+            FloatControl gainControl = (FloatControl) musicaFondo.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-20.0f);
+            musicaFondo.loop(Clip.LOOP_CONTINUOUSLY);
+        } catch (Exception e) {
+            System.err.println("Error al cargar música de fondo: " + e.getMessage());
+        }
+    }
+
+    private void detenerMusica() {
+        if (musicaFondo != null && musicaFondo.isRunning()) {
+            musicaFondo.stop();
+            musicaFondo.close();
+        }
     }
     
     public void mostrarPuntajes() throws IOException {
@@ -317,6 +341,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                             @Override
                             public void run() {
                                 VentanaPrincipal.this.dispose();
+                                detenerMusica();
                                 VentanaMundo ventana = new VentanaMundo(VentanaPrincipal.this, true);
                                 ventana.setVisible(true);
                             }

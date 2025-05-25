@@ -298,6 +298,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_PanelSalirMouseExited
 
     private void PanelJugarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelJugarMouseClicked
+
         try {
             InputStream audioStream = getClass().getResourceAsStream("/autonoma/deadlycode/sounds/voice_Timmy.wav");
             if (audioStream == null) {
@@ -331,6 +332,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             new VentanaMundo(null, true).setVisible(true);
         }
     }//GEN-LAST:event_PanelJugarMouseClicked
+                                  
 
     private void PanelSalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelSalirMouseClicked
         try {

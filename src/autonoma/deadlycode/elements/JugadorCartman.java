@@ -18,8 +18,8 @@ import javax.imageio.ImageIO;
 public class JugadorCartman extends Personaje {
     
     /** Cantidad de pociones de curación disponibles */
-    private int pocionesRestantes = 3;
-    private int usosHolaMundo = 3;
+    public int pocionesRestantes = 3;
+    public int usosHolaMundo = 3;
     
     /** Distancia de movimiento por paso */
     public static final int STEP = 10;
@@ -142,6 +142,12 @@ public class JugadorCartman extends Personaje {
     }
     public boolean puedeUsarHolaMundo() {
         return usosHolaMundo > 0;
+    }
+    public void recibirDanio(int danio) {
+        this.vida -= danio;
+        if (this.vida < 0) {
+            this.vida = 0;
+        }
     }
     //Getters
     public int getPosX() {

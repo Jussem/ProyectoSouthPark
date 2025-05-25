@@ -36,6 +36,7 @@ public class ProgramadorSenior extends Personaje {
      * @param objetivo Personaje que recibirá el daño
      */
     public void bugs(Personaje objetivo) {
-        objetivo.recibirDanio(25);
+        int danio = 20;
+        objetivo.recibirDanio(danio);
     }
 }

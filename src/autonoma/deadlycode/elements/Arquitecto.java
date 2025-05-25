@@ -35,6 +35,7 @@ public class Arquitecto extends Personaje {
      * @param objetivo Personaje que recibirá el daño del ataque
      */
     public void arbolRojinegro(Personaje objetivo) {
-        objetivo.recibirDanio(40);
+        int danio = 50;
+        objetivo.recibirDanio(danio);
     }
 }

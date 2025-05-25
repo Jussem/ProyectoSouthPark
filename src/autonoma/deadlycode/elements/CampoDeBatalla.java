@@ -22,7 +22,7 @@ import static javax.swing.Spring.width;
  * @author Cristian Camilo Salazar Arenas
  * @author Juan Jose Morales
  * @version 1.0
- * @since 2023
+ * @since 2025
  */
 public class CampoDeBatalla {
         

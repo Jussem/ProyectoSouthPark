@@ -6,9 +6,11 @@ package autonoma.deadlycode.gui;
 
 import autonoma.deadlycode.elements.CampoDeBatalla;
 import autonoma.deadlycode.elements.JugadorCartman;
+import autonoma.deadlycode.elements.Personaje;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -20,6 +22,7 @@ import javax.swing.JOptionPane;
 public class VentanaMundo extends javax.swing.JDialog {
 
     CampoDeBatalla campo;
+    private List<Personaje> enemigos;
     
     public VentanaMundo(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -36,7 +39,17 @@ public class VentanaMundo extends javax.swing.JDialog {
         pnlJugador.setFocusable(true);
         pnlJugador.requestFocusInWindow();
     }
+    private boolean estaSobreEnemigo() {
+        int jugadorX = pnlJugador.getX() + pnlJugador.getWidth() / 2;
+        int jugadorY = pnlJugador.getY() + pnlJugador.getHeight() / 2;
 
+        int enemigoX = lblPelea1.getX() + lblPelea1.getWidth() / 2;
+        int enemigoY = lblPelea1.getY() + lblPelea1.getHeight() / 2;
+        int rango = 50;
+
+        return Math.abs(jugadorX - enemigoX) < rango
+                && Math.abs(jugadorY - enemigoY) < rango;
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -44,6 +57,7 @@ public class VentanaMundo extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         pnlJugador = new javax.swing.JPanel();
         lblJugador = new javax.swing.JLabel();
+        lblPelea1 = new javax.swing.JLabel();
         lblCampo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -80,6 +94,11 @@ public class VentanaMundo extends javax.swing.JDialog {
 
         jPanel1.add(pnlJugador, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 130, 90, -1));
 
+        lblPelea1.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 24)); // NOI18N
+        lblPelea1.setForeground(new java.awt.Color(255, 0, 0));
+        lblPelea1.setText("Iniciar pelea 'T'");
+        jPanel1.add(lblPelea1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 160, -1, -1));
+
         lblCampo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autonoma/deadlycode/images/casasJuego.jpg"))); // NOI18N
         jPanel1.add(lblCampo, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, -1, 258));
 
@@ -104,7 +123,7 @@ public class VentanaMundo extends javax.swing.JDialog {
             switch (evt.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
                 case KeyEvent.VK_RIGHT:
-                    campo.handleKey(evt); // Maneja el movimiento con las flechas
+                    campo.handleKey(evt); 
                     pnlJugador.setLocation(
                             campo.getJugador().getPosX(),
                             campo.getJugador().getPosY()
@@ -126,27 +145,48 @@ public class VentanaMundo extends javax.swing.JDialog {
                 case KeyEvent.VK_LEFT:
                 case KeyEvent.VK_RIGHT:
                     campo.handleKey(evt);
-                    pnlJugador.setLocation(
-                            campo.getJugador().getPosX(),
-                            campo.getJugador().getPosY()
-                    );
+                    pnlJugador.setLocation(campo.getJugador().getPosX(), campo.getJugador().getPosY());
+                    actualizarFeedback();
                     break;
                 case KeyEvent.VK_Q:
-                    exitGame(); 
+                    exitGame();
+                    break;
+                case KeyEvent.VK_T:
+                    if (estaSobreEnemigo()) {
+                        iniciarPelea();
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                                "No estás sobre el enemigo",
+                                "Información",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    }
                     break;
             }
         } catch (IOException ex) {
             Logger.getLogger(VentanaMundo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_pnlJugadorKeyPressed
+    private void iniciarPelea() {
+        this.dispose();
+        VentanaPelea ventanaPelea = new VentanaPelea(null, true, campo.getJugador());
+        ventanaPelea.setVisible(true);
+    }
     private void exitGame() {
         this.dispose(); 
         System.exit(0);
+    }
+    private void actualizarFeedback() {
+        if (estaSobreEnemigo()) {
+            lblPelea1.setForeground(Color.GREEN); 
+        } else {
+            lblPelea1.setForeground(Color.RED); 
+        }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblCampo;
     private javax.swing.JLabel lblJugador;
+    private javax.swing.JLabel lblPelea1;
     private javax.swing.JPanel pnlJugador;
     // End of variables declaration//GEN-END:variables
 }

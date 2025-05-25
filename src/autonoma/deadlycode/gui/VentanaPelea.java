@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 /**
  *
@@ -36,12 +37,17 @@ public class VentanaPelea extends javax.swing.JDialog {
     private JugadorCartman jugador;
     private Personaje[] enemigosFases;
     private Personaje enemigoActual;
+    private boolean turnoJugador = true;
     
-    public VentanaPelea(java.awt.Frame parent, boolean modal) {
+    public VentanaPelea(java.awt.Frame parent, boolean modal, JugadorCartman jugador) {
         super(parent, modal);
         initComponents();
+        this.jugador = jugador;
+        this.turnoJugador = true;
         inicializarEnemigos();
         cargarFase(faseActual);
+        lblJugador.requestFocusInWindow();
+        
     }
     private void inicializarEnemigos() {
         enemigosFases = new Personaje[]{
@@ -50,11 +56,50 @@ public class VentanaPelea extends javax.swing.JDialog {
             new Arquitecto(420, 170, 150, 150, Color.RED)
         };
     }
+    private void cambiarTurno() {
+        turnoJugador = !turnoJugador;
+        actualizarEstado();
+
+        if (!turnoJugador) {
+            lblJugador.setEnabled(false);
+
+            Timer timer = new Timer(1500, e -> {
+                turnoEnemigo();
+                lblJugador.setEnabled(true);
+                lblJugador.requestFocusInWindow();
+            });
+            timer.setRepeats(false);
+            timer.start();
+        }
+    }
     private void cargarFase(int fase) {
         enemigoActual = enemigosFases[fase];
         lblFondo.setIcon(new ImageIcon(getClass().getResource(fondos[fase])));
-        lblEnemigo.setIcon(new ImageIcon(getClass().getResource(enemigos[fase])));
-        mostrarEstado();
+
+        // Cargar imagen del enemigo
+        ImageIcon iconoEnemigo = new ImageIcon(getClass().getResource(enemigos[fase]));
+        lblEnemigo.setIcon(iconoEnemigo);
+
+        // Ajustar tamaño y posición
+        lblEnemigo.setSize(iconoEnemigo.getIconWidth(), iconoEnemigo.getIconHeight());
+        lblEnemigo.setLocation(420, 170);
+
+        // Mostrar mensaje de nueva fase
+        String nombreEnemigo = "";
+        if (fase == 0) {
+            nombreEnemigo = "Programador Junior";
+        } else if (fase == 1) {
+            nombreEnemigo = "Programador Senior";
+        } else if (fase == 2) {
+            nombreEnemigo = "Arquitecto";
+        }
+
+        JOptionPane.showMessageDialog(this,
+                "¡Nueva fase! Enfrentando a: " + nombreEnemigo,
+                "Fase " + (fase + 1),
+                JOptionPane.INFORMATION_MESSAGE);
+
+        actualizarEstado();
     }
     public void siguienteFase() {
         faseActual++;
@@ -72,27 +117,51 @@ public class VentanaPelea extends javax.swing.JDialog {
             JOptionPane.INFORMATION_MESSAGE);
     }
     private void actualizarEstado() {
-        String mensaje = "Vida enemigo: " + enemigoActual.getVida()
-                + "\nPociones: " + jugador.tienePociones()
-                + "\nHolaMundo: " + jugador.puedeUsarHolaMundo();
+        String mensaje = String.format(
+                "Turno: %s | Vida Jugador: %d | Vida Enemigo: %d%nPociones: %d | HolaMundo: %d",
+                turnoJugador ? "JUGADOR" : "ENEMIGO",
+                jugador.getVida(),
+                enemigoActual.getVida(),
+                jugador.tienePociones() ? jugador.pocionesRestantes : 0,
+                jugador.puedeUsarHolaMundo() ? jugador.usosHolaMundo : 0
+        );
         lblEstado.setText(mensaje);
     }
     private void turnoEnemigo() {
-        
         if (enemigoActual instanceof ProgramadorJunior) {
             ProgramadorJunior junior = (ProgramadorJunior) enemigoActual;
             junior.documentacionJava(jugador);
+            JOptionPane.showMessageDialog(this,
+                    "¡El Programador Junior te ataca con Documentación Java!",
+                    "Ataque Enemigo",
+                    JOptionPane.WARNING_MESSAGE);
         } else if (enemigoActual instanceof ProgramadorSenior) {
             ProgramadorSenior senior = (ProgramadorSenior) enemigoActual;
             senior.bugs(jugador);
+            JOptionPane.showMessageDialog(this,
+                    "¡El Programador Senior te ataca con Bugs!",
+                    "Ataque Enemigo",
+                    JOptionPane.WARNING_MESSAGE);
         } else if (enemigoActual instanceof Arquitecto) {
             Arquitecto arquitecto = (Arquitecto) enemigoActual;
             arquitecto.arbolRojinegro(jugador);
+            JOptionPane.showMessageDialog(this,
+                    "¡El Arquitecto te ataca con Árbol Rojinegro!",
+                    "Ataque Enemigo",
+                    JOptionPane.WARNING_MESSAGE);
         }
+
         actualizarEstado();
+
         if (jugador.getVida() <= 0) {
-            JOptionPane.showMessageDialog(this, "¡Has sido derrotado!", "Game Over", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "¡Has sido derrotado!",
+                    "Game Over",
+                    JOptionPane.ERROR_MESSAGE);
             this.dispose();
+        } else {
+            turnoJugador = true; 
+            actualizarEstado();
         }
     }
 
@@ -124,9 +193,9 @@ public class VentanaPelea extends javax.swing.JDialog {
         });
         jPanel1.add(lblJugador, new org.netbeans.lib.awtextra.AbsoluteConstraints(-110, 200, 370, 210));
 
-        lblEstado.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 3, 24)); // NOI18N
+        lblEstado.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 3, 14)); // NOI18N
         lblEstado.setText("0");
-        jPanel1.add(lblEstado, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 560, 40));
+        jPanel1.add(lblEstado, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 600, 40));
 
         lblFondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autonoma/deadlycode/images/fondoPelea1.jpg"))); // NOI18N
         jPanel1.add(lblFondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 640, 420));
@@ -146,31 +215,60 @@ public class VentanaPelea extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void lblJugadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lblJugadorKeyPressed
+        if (!turnoJugador || !lblJugador.isEnabled()) {
+            JOptionPane.showMessageDialog(this,
+                    "Espera tu turno!",
+                    "Turno del enemigo",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        boolean accionValida = true;
+
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_Z:
                 jugador.atacar(enemigoActual);
+                System.out.println("Ataque normal! Vida enemigo: " + enemigoActual.getVida());
                 break;
+
             case KeyEvent.VK_X:
                 if (jugador.puedeUsarHolaMundo()) {
                     jugador.HolaMundo(enemigoActual);
+                    System.out.println("Hola Mundo! Vida enemigo: " + enemigoActual.getVida());
                 } else {
-                    JOptionPane.showMessageDialog(this, "¡No te quedan usos de HolaMundo!", "Error", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this,
+                            "¡No te quedan usos de HolaMundo!",
+                            "Error",
+                            JOptionPane.WARNING_MESSAGE);
+                    accionValida = false;
                 }
                 break;
+
             case KeyEvent.VK_H:
                 if (jugador.tienePociones()) {
                     jugador.curar();
+                    System.out.println("Curando! Vida jugador: " + jugador.getVida());
                 } else {
-                    JOptionPane.showMessageDialog(this, "¡No te quedan pociones!", "Error", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this,
+                            "¡No te quedan pociones!",
+                            "Error",
+                            JOptionPane.WARNING_MESSAGE);
+                    accionValida = false;
                 }
                 break;
-        }
-        actualizarEstado();
 
-        if (enemigoActual.getVida() > 0) {
-            turnoEnemigo();
-        } else {
-            siguienteFase();
+            default:
+                accionValida = false;
+        }
+
+        if (accionValida) {
+            actualizarEstado();
+
+            if (enemigoActual.getVida() <= 0) {
+                siguienteFase();
+            } else {
+                cambiarTurno();
+            }
         }
     }//GEN-LAST:event_lblJugadorKeyPressed
 

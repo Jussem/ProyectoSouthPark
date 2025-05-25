@@ -35,7 +35,8 @@ public class ProgramadorJunior extends Personaje {
      * 
      * @param objetivo Personaje que recibirá el daño
      */
-    public void documentacionJava(Personaje objetivo) {
-        objetivo.recibirDanio(15);
-    }
+    public void documentacionJava(JugadorCartman jugador) {
+    int danio = 10; 
+    jugador.recibirDanio(danio);
+}
 }

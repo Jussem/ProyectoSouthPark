@@ -40,6 +40,7 @@ public abstract class Personaje extends Sprite{
      */
     public void recibirDanio(int danio) {
         this.vida = Math.max(vida - danio, 0);
+        System.out.println("Recibió " + danio + " de daño. Vida restante: " + this.vida);
     }
     /**
      * Aumenta los puntos de vida del personaje usando una poción de curación.

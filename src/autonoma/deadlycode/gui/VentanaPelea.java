@@ -24,7 +24,7 @@ public class VentanaPelea extends javax.swing.JDialog {
     private final String[] fondos = {
         "/autonoma/deadlycode/images/fondoPelea1.jpg",
         "/autonoma/deadlycode/images/fondoPelea2.jpg",
-        "/autonoma/deadlycode/images/fondoPelea3.webp"
+        "/autonoma/deadlycode/images/fondoPelea3.jpg"
     };
     
     private final String[] enemigos = {
@@ -61,7 +61,7 @@ public class VentanaPelea extends javax.swing.JDialog {
         actualizarEstado();
 
         if (!turnoJugador) {
-            lblJugador.setEnabled(false);
+            lblJugador.setEnabled(false);//Lo que hace que cambie de color (gris/blanquecino)
 
             Timer timer = new Timer(1500, e -> {
                 turnoEnemigo();
@@ -118,7 +118,7 @@ public class VentanaPelea extends javax.swing.JDialog {
     }
     private void actualizarEstado() {
         String mensaje = String.format(
-                "Turno: %s | Vida Jugador: %d | Vida Enemigo: %d%nPociones: %d | HolaMundo: %d",
+                "Turno: %s | Vida Jugador: %d | Vida Enemigo: %d | %nPociones: %d | HolaMundo: %d",
                 turnoJugador ? "JUGADOR" : "ENEMIGO",
                 jugador.getVida(),
                 enemigoActual.getVida(),
@@ -228,13 +228,13 @@ public class VentanaPelea extends javax.swing.JDialog {
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_Z:
                 jugador.atacar(enemigoActual);
-                System.out.println("Ataque normal! Vida enemigo: " + enemigoActual.getVida());
+                
                 break;
 
             case KeyEvent.VK_X:
                 if (jugador.puedeUsarHolaMundo()) {
                     jugador.HolaMundo(enemigoActual);
-                    System.out.println("Hola Mundo! Vida enemigo: " + enemigoActual.getVida());
+                    
                 } else {
                     JOptionPane.showMessageDialog(this,
                             "¡No te quedan usos de HolaMundo!",
@@ -247,7 +247,7 @@ public class VentanaPelea extends javax.swing.JDialog {
             case KeyEvent.VK_H:
                 if (jugador.tienePociones()) {
                     jugador.curar();
-                    System.out.println("Curando! Vida jugador: " + jugador.getVida());
+                    
                 } else {
                     JOptionPane.showMessageDialog(this,
                             "¡No te quedan pociones!",

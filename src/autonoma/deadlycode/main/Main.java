@@ -1,22 +1,19 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package autonoma.deadlycode.main;
 
-import autonoma.deadlycode.gui.VentanaMundo;
+import autonoma.deadlycode.gui.VentanaPrincipal;
+import java.io.IOException;
 
-/**
- *
- * @author crist
- */
 public class Main {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-        
+        try {
+            String ruta = "puntajes.txt";
+            VentanaPrincipal ventana = new VentanaPrincipal();
+            ventana.setSize(1328, 770);
+            ventana.setLocationRelativeTo(null);
+            ventana.setVisible(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-    
 }

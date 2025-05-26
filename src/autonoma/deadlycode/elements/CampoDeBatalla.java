@@ -193,4 +193,9 @@ public class CampoDeBatalla {
     public JugadorCartman getJugador() {
         return this.jugador;
     }
+    
+    public void setJugador(JugadorCartman jugador) {
+    this.jugador = jugador;
+    this.jugador.inicializarLimites(this.maxX, this.maxY); // para respetar los límites
+}
 }   

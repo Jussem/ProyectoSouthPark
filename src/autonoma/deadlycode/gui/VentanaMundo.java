@@ -1,6 +1,7 @@
 package autonoma.deadlycode.gui;
 
 import autonoma.deadlycode.elements.CampoDeBatalla;
+import autonoma.deadlycode.elements.JugadorCartman;
 import autonoma.deadlycode.elements.Personaje;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -25,33 +26,36 @@ public class VentanaMundo extends javax.swing.JDialog {
     CampoDeBatalla campo;
     private List<Personaje> enemigos;
     
-    public VentanaMundo(java.awt.Frame parent, boolean modal) {
+    public VentanaMundo(java.awt.Frame parent, boolean modal,JugadorCartman jugador) {
         super(parent, modal);
-        try {
-            String rutaArchivo = "src/autonoma/deadlycode/models/puntajes.txt";
-            this.campo = new CampoDeBatalla(rutaArchivo);
-        } catch (IOException ex) {
-            Logger.getLogger(VentanaMundo.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, "Error al crear/cargar el archivo de puntajes", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+    try {
+        String rutaArchivo = "src/autonoma/deadlycode/models/puntajes.txt";
+        this.campo = new CampoDeBatalla(rutaArchivo);
+        this.campo.setJugador(jugador);
+    } catch (IOException ex) {
+        Logger.getLogger(VentanaMundo.class.getName()).log(Level.SEVERE, null, ex);
+        JOptionPane.showMessageDialog(this, "Error al crear/cargar el archivo de puntajes",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
         initComponents();
         iniciarMusicaFondo();
         lblJugador.setFocusable(false);  
         lblJugador.removeKeyListener(lblJugador.getKeyListeners()[0]);
         pnlJugador.setFocusable(true);
         pnlJugador.requestFocusInWindow();
+        pnlJugador.setLocation(jugador.getPosX(), jugador.getPosY());
     }
 
-    private boolean estaSobreEnemigo() {
-        int jugadorX = pnlJugador.getX() + pnlJugador.getWidth() / 2;
-        int jugadorY = pnlJugador.getY() + pnlJugador.getHeight() / 2;
-        int enemigoX = lblPelea1.getX() + lblPelea1.getWidth() / 2;
-        int enemigoY = lblPelea1.getY() + lblPelea1.getHeight() / 2;
-        int rango = 50;
+    private boolean estaSobreEnemigo(javax.swing.JLabel enemigo) {
+    int jugadorX = pnlJugador.getX() + pnlJugador.getWidth() / 2;
+    int jugadorY = pnlJugador.getY() + pnlJugador.getHeight() / 2;
+    int enemigoX = enemigo.getX() + enemigo.getWidth() / 2;
+    int enemigoY = enemigo.getY() + enemigo.getHeight() / 2;
+    int rango = 50;
 
-        return Math.abs(jugadorX - enemigoX) < rango
-                && Math.abs(jugadorY - enemigoY) < rango;
-    }
+    return Math.abs(jugadorX - enemigoX) < rango && Math.abs(jugadorY - enemigoY) < rango;
+}
+
     
     private void iniciarMusicaFondo() {
         try {
@@ -66,7 +70,7 @@ public class VentanaMundo extends javax.swing.JDialog {
             System.err.println("Error al cargar música de fondo: " + e.getMessage());
         }
     }
-    
+
     private void detenerMusica(){
         if (musicaFondo != null && musicaFondo.isRunning()) {
             musicaFondo.stop();
@@ -81,6 +85,8 @@ public class VentanaMundo extends javax.swing.JDialog {
         pnlJugador = new javax.swing.JPanel();
         lblJugador = new javax.swing.JLabel();
         lblPelea1 = new javax.swing.JLabel();
+        lblPelea2 = new javax.swing.JLabel();
+        lblPelea3 = new javax.swing.JLabel();
         lblCampo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -121,7 +127,17 @@ public class VentanaMundo extends javax.swing.JDialog {
         lblPelea1.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 24)); // NOI18N
         lblPelea1.setForeground(new java.awt.Color(255, 0, 0));
         lblPelea1.setText("Iniciar pelea 'T'");
-        jPanel1.add(lblPelea1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 160, -1, -1));
+        jPanel1.add(lblPelea1, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 170, -1, -1));
+
+        lblPelea2.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 24)); // NOI18N
+        lblPelea2.setForeground(new java.awt.Color(255, 0, 0));
+        lblPelea2.setText("Iniciar pelea 'T'");
+        jPanel1.add(lblPelea2, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 170, -1, -1));
+
+        lblPelea3.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 24)); // NOI18N
+        lblPelea3.setForeground(new java.awt.Color(255, 0, 0));
+        lblPelea3.setText("Iniciar pelea 'T'");
+        jPanel1.add(lblPelea3, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 170, -1, -1));
 
         lblCampo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autonoma/deadlycode/images/casasJuego.jpg"))); // NOI18N
         jPanel1.add(lblCampo, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, -1, 258));
@@ -176,7 +192,7 @@ public class VentanaMundo extends javax.swing.JDialog {
                     exitGame();
                     break;
                 case KeyEvent.VK_T:
-                    if (estaSobreEnemigo()) {
+                    if (estaSobreEnemigo(lblPelea1) || estaSobreEnemigo(lblPelea2) || estaSobreEnemigo(lblPelea3)) {
                         iniciarPelea();
                     } else {
                         JOptionPane.showMessageDialog(this,
@@ -185,6 +201,7 @@ public class VentanaMundo extends javax.swing.JDialog {
                                 JOptionPane.INFORMATION_MESSAGE);
                     }
                     break;
+
             }
         } catch (IOException ex) {
             Logger.getLogger(VentanaMundo.class.getName()).log(Level.SEVERE, null, ex);
@@ -202,17 +219,20 @@ public class VentanaMundo extends javax.swing.JDialog {
         System.exit(0);
     }
     private void actualizarFeedback() {
-        if (estaSobreEnemigo()) {
-            lblPelea1.setForeground(Color.GREEN); 
-        } else {
-            lblPelea1.setForeground(Color.RED); 
-        }
-    }
+    lblPelea1.setForeground(estaSobreEnemigo(lblPelea1) ? Color.GREEN : Color.RED);
+    lblPelea2.setForeground(estaSobreEnemigo(lblPelea2) ? Color.GREEN : Color.RED);
+    lblPelea3.setForeground(estaSobreEnemigo(lblPelea3) ? Color.GREEN : Color.RED);
+}
+
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblCampo;
     private javax.swing.JLabel lblJugador;
     private javax.swing.JLabel lblPelea1;
+    private javax.swing.JLabel lblPelea2;
+    private javax.swing.JLabel lblPelea3;
     private javax.swing.JPanel pnlJugador;
     // End of variables declaration//GEN-END:variables
 }

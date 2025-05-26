@@ -131,9 +131,8 @@ public class VentanaPelea extends javax.swing.JDialog {
     public void siguienteFase() {
         faseActual++;
     if (faseActual < 3) {
-        // Cierra la ventana de pelea y regresa a VentanaMundo
         this.dispose();
-        VentanaMundo mundo = new VentanaMundo(null, true);
+        VentanaMundo mundo = new VentanaMundo(null, true, jugador); // 👈 Pasamos el mismo jugador
         mundo.setLocationRelativeTo(null);
         mundo.setVisible(true);
     } else {

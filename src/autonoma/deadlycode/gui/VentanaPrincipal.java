@@ -1,6 +1,7 @@
 package autonoma.deadlycode.gui;
 
 import autonoma.deadlycode.elements.CampoDeBatalla;
+import autonoma.deadlycode.elements.JugadorCartman;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -346,40 +347,42 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     private void PanelJugarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelJugarMouseClicked
 
-        try {
-            InputStream audioStream = getClass().getResourceAsStream("/autonoma/deadlycode/sounds/voice_Timmy.wav");
-            if (audioStream == null) {
-                JOptionPane.showMessageDialog(this, "Archivo no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            final Clip clip = AudioSystem.getClip();
-            clip.open(AudioSystem.getAudioInputStream(audioStream));
-            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-15.0f);
-            clip.addLineListener(new LineListener() {
-                @Override
-                public void update(LineEvent event) {
-                    if (event.getType() == LineEvent.Type.STOP) {
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                VentanaPrincipal.this.dispose();
-                                detenerMusica();
-                                VentanaMundo ventana = new VentanaMundo(VentanaPrincipal.this, true);
-                                ventana.setLocationRelativeTo(null);
-                                ventana.setVisible(true);
-                            }
-                        });
-                        clip.close();
-                    }
-                }
-            });
-            clip.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-            dispose();
-            new VentanaMundo(null, true).setVisible(true);
+         try {
+        InputStream audioStream = getClass().getResourceAsStream("/autonoma/deadlycode/sounds/voice_Timmy.wav");
+        if (audioStream == null) {
+            JOptionPane.showMessageDialog(this, "Archivo no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+        final Clip clip = AudioSystem.getClip();
+        clip.open(AudioSystem.getAudioInputStream(audioStream));
+        FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        gainControl.setValue(-15.0f);
+        clip.addLineListener(new LineListener() {
+            @Override
+            public void update(LineEvent event) {
+                if (event.getType() == LineEvent.Type.STOP) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            VentanaPrincipal.this.dispose();
+                            detenerMusica();
+                            JugadorCartman jugador = new JugadorCartman(30, 130, 90, 100, java.awt.Color.RED); // 👈
+                            VentanaMundo ventana = new VentanaMundo(VentanaPrincipal.this, true, jugador); // 👈
+                            ventana.setLocationRelativeTo(null);
+                            ventana.setVisible(true);
+                        }
+                    });
+                    clip.close();
+                }
+            }
+        });
+        clip.start();
+    } catch (Exception e) {
+        e.printStackTrace();
+        dispose();
+        JugadorCartman jugador = new JugadorCartman(30, 130, 90, 100, java.awt.Color.RED); // 👈
+        new VentanaMundo(null, true, jugador).setVisible(true); // 👈
+    }
     }//GEN-LAST:event_PanelJugarMouseClicked
                                   
 

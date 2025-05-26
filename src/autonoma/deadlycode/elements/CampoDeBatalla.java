@@ -62,7 +62,7 @@ public class CampoDeBatalla {
         this.lector = new LectorArchivoTextoPlano();
         this.escritor = new EscritorArchivoTextoPlano(rutaArchivo);
 
-        this.maxX = 700;
+        this.maxX = 1156;
         this.maxY = 500;
         this.puntaje = 0;
         this.jugador = new JugadorCartman(32, 130, 120, 170, Color.RED);

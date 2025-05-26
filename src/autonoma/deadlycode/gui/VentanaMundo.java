@@ -15,6 +15,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 /**
  *
@@ -42,15 +43,23 @@ public class VentanaMundo extends javax.swing.JDialog {
     }
         initComponents();
         iniciarMusicaFondo();
-        lblJugador.setFocusable(false);  
-        lblJugador.removeKeyListener(lblJugador.getKeyListeners()[0]);
-        pnlJugador.setFocusable(true);
-        pnlJugador.requestFocusInWindow();
-        pnlJugador.setLocation(jugador.getPosX(), jugador.getPosY());
-        
-    if (!jugador.isPelea1Activa()) lblPelea1.setVisible(false);
-    if (!jugador.isPelea2Activa()) lblPelea2.setVisible(false);
-    if (!jugador.isPelea3Activa()) lblPelea3.setVisible(false);
+
+    
+    this.pelea1Activa = jugador.isPelea1Activa();
+    this.pelea2Activa = jugador.isPelea2Activa();
+    this.pelea3Activa = jugador.isPelea3Activa();
+
+    lblJugador.setFocusable(false);
+    lblJugador.removeKeyListener(lblJugador.getKeyListeners()[0]);
+    pnlJugador.setFocusable(true);
+    pnlJugador.requestFocusInWindow();
+    pnlJugador.setLocation(jugador.getPosX(), jugador.getPosY());
+
+    lblPelea1.setVisible(pelea1Activa);
+    lblPelea2.setVisible(pelea2Activa);
+    lblPelea3.setVisible(pelea3Activa);
+
+    iniciarAnimacionParpadeo();
     }
 
     private boolean estaSobreEnemigo(javax.swing.JLabel enemigo) {
@@ -141,17 +150,17 @@ public class VentanaMundo extends javax.swing.JDialog {
         lblPelea1.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 24)); // NOI18N
         lblPelea1.setForeground(new java.awt.Color(255, 0, 0));
         lblPelea1.setText("Iniciar pelea 'T'");
-        jPanel1.add(lblPelea1, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 170, -1, -1));
+        jPanel1.add(lblPelea1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 160, -1, -1));
 
         lblPelea2.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 24)); // NOI18N
         lblPelea2.setForeground(new java.awt.Color(255, 0, 0));
         lblPelea2.setText("Iniciar pelea 'T'");
-        jPanel1.add(lblPelea2, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 170, -1, -1));
+        jPanel1.add(lblPelea2, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 160, -1, -1));
 
         lblPelea3.setFont(new java.awt.Font("Tw Cen MT Condensed Extra Bold", 0, 24)); // NOI18N
         lblPelea3.setForeground(new java.awt.Color(255, 0, 0));
         lblPelea3.setText("Iniciar pelea 'T'");
-        jPanel1.add(lblPelea3, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 170, -1, -1));
+        jPanel1.add(lblPelea3, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 160, -1, -1));
 
         lblCampo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/autonoma/deadlycode/images/casasJuego.jpg"))); // NOI18N
         jPanel1.add(lblCampo, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 6, -1, 258));
@@ -222,34 +231,67 @@ public class VentanaMundo extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_pnlJugadorKeyPressed
     private void iniciarPelea() {
-    JugadorCartman jugador = campo.getJugador(); // Obtener jugador actual
+    JugadorCartman jugador = campo.getJugador();
 
-    if (estaSobreEnemigo(lblPelea1)) {
+    // Sólo permitir la pelea 2 si pelea 1 está terminada (no activa)
+    // Sólo permitir la pelea 3 si pelea 2 está terminada (no activa)
+
+    if (estaSobreEnemigo(lblPelea1) && pelea1Activa) {
         pelea1Activa = false;
-        jugador.setPelea1Activa(false); // Marca como desactivada permanentemente
+        jugador.setPelea1Activa(false);
         lblPelea1.setVisible(false);
-    } else if (estaSobreEnemigo(lblPelea2)) {
+    } else if (estaSobreEnemigo(lblPelea2) && pelea2Activa && !jugador.isPelea1Activa()) {
         pelea2Activa = false;
         jugador.setPelea2Activa(false);
         lblPelea2.setVisible(false);
-    } else if (estaSobreEnemigo(lblPelea3)) {
+    } else if (estaSobreEnemigo(lblPelea3) && pelea3Activa && !jugador.isPelea2Activa()) {
         pelea3Activa = false;
         jugador.setPelea3Activa(false);
         lblPelea3.setVisible(false);
+    } else {
+        JOptionPane.showMessageDialog(this,
+            "No puedes iniciar esta pelea aún.",
+            "Acceso denegado",
+            JOptionPane.WARNING_MESSAGE);
+        return;
     }
 
-    this.dispose();
     detenerMusica();
+    this.dispose();
+
     VentanaPelea ventanaPelea = new VentanaPelea(null, true, jugador);
     ventanaPelea.setLocationRelativeTo(null);
     ventanaPelea.setVisible(true);
+
+    VentanaMundo nuevoMundo = new VentanaMundo(null, true, jugador);
+    nuevoMundo.setLocationRelativeTo(null);
+    nuevoMundo.setVisible(true);
 }
 
 
+
+
+    
     private void exitGame() {
         this.dispose(); 
         System.exit(0);
     }
+    private void iniciarAnimacionParpadeo() {
+    Timer timer = new Timer(500, e -> {
+        if (pelea1Activa)
+            lblPelea1.setVisible(true);
+        if (pelea2Activa)
+            lblPelea2.setVisible(true);
+        if (pelea3Activa)
+            lblPelea3.setVisible(true);
+    });
+    timer.start();
+}
+
+
+
+
+    
     private void actualizarFeedback() {
     lblPelea1.setForeground(estaSobreEnemigo(lblPelea1) ? Color.GREEN : Color.RED);
     lblPelea2.setForeground(estaSobreEnemigo(lblPelea2) ? Color.GREEN : Color.RED);

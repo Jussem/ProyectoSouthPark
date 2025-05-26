@@ -161,6 +161,14 @@ public class JugadorCartman extends Personaje {
     public int getPosY() {
         return this.y;
     }
+    public void setPosX(int x) {
+    this.x = x;
+}
+
+public void setPosY(int y) {
+    this.y = y;
+}
+
     public int getVida() {
         return this.vida;
     }

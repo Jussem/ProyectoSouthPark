@@ -6,28 +6,42 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
-import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineListener;
+import javax.sound.sampled.*;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 /**
- *
- * @author crist
+ * Clase que representa la ventana principal del juego "The Deadly Code".
+ * Controla la reproducción de música de fondo, muestra puntajes almacenados y 
+ * permite al jugador iniciar o salir del juego con efectos de sonido.
+ * 
+ * Esta clase extiende JFrame e incluye interacción gráfica con el usuario.
+ * 
+ * @author Cristian
+ * @version 1.0
+ * @since 2023
  */
 public class VentanaPrincipal extends javax.swing.JFrame {
-    private Clip musicaFondo;
     
-    public VentanaPrincipal() throws FileNotFoundException, IOException{
+    /** Clip de audio que representa la música de fondo. */
+    private Clip musicaFondo;
+
+    /**
+     * Constructor de la ventana principal. Inicializa componentes,
+     * muestra los puntajes almacenados y comienza la música de fondo.
+     * 
+     * @throws FileNotFoundException si no se encuentra el archivo de puntajes
+     * @throws IOException si ocurre un error al leer el archivo de puntajes
+     */
+    public VentanaPrincipal() throws FileNotFoundException, IOException {
         initComponents();
         this.mostrarPuntajes();
         iniciarMusicaFondo();
     }
-    
+
+    /**
+     * Inicia la música de fondo en bucle desde el archivo de recursos.
+     */
     private void iniciarMusicaFondo() {
         try {
             InputStream audioStream = getClass().getResourceAsStream("/autonoma/deadlycode/sounds/musica_fondo.wav");
@@ -35,20 +49,28 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             musicaFondo = AudioSystem.getClip();
             musicaFondo.open(ais);
             FloatControl gainControl = (FloatControl) musicaFondo.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-20.0f);
+            gainControl.setValue(-20.0f);  // Reduce el volumen
             musicaFondo.loop(Clip.LOOP_CONTINUOUSLY);
         } catch (Exception e) {
             System.err.println("Error al cargar música de fondo: " + e.getMessage());
         }
     }
 
+    /**
+     * Detiene y cierra la música de fondo si se está reproduciendo.
+     */
     private void detenerMusica() {
         if (musicaFondo != null && musicaFondo.isRunning()) {
             musicaFondo.stop();
             musicaFondo.close();
         }
     }
-    
+
+    /**
+     * Lee los puntajes desde un archivo y los muestra en la interfaz gráfica.
+     * 
+     * @throws IOException si ocurre un error al leer el archivo
+     */
     public void mostrarPuntajes() throws IOException {
         String ruta = "puntajes.txt";
         CampoDeBatalla campoPuntajes = new CampoDeBatalla(ruta);
@@ -328,23 +350,34 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+     * Cambia el color del panel "Jugar" al pasar el mouse.
+     */
     private void PanelJugarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelJugarMouseEntered
         PanelJugar.setBackground(new java.awt.Color(255, 0, 0));
     }//GEN-LAST:event_PanelJugarMouseEntered
-
+    /**
+     * Restaura el color del panel "Jugar" cuando el mouse sale del área.
+     */
     private void PanelJugarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelJugarMouseExited
         PanelJugar.setBackground(new java.awt.Color(0, 153, 153));
     }//GEN-LAST:event_PanelJugarMouseExited
-
+/**
+     * Cambia el color del panel "Salir" al pasar el mouse.
+     */
     private void PanelSalirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelSalirMouseEntered
         PanelSalir.setBackground(new java.awt.Color(255, 0, 0));
     }//GEN-LAST:event_PanelSalirMouseEntered
-
+    /**
+     * Restaura el color del panel "Salir" cuando el mouse sale del área.
+     */
     private void PanelSalirMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelSalirMouseExited
         PanelSalir.setBackground(new java.awt.Color(0, 153, 153));
     }//GEN-LAST:event_PanelSalirMouseExited
-
+    /**
+     * Maneja el evento de clic en el panel "Jugar". Reproduce un sonido
+     * y luego abre la ventana del mundo del juego.
+     */
     private void PanelJugarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelJugarMouseClicked
 
          try {
@@ -385,7 +418,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_PanelJugarMouseClicked
                                   
-
+    /**
+     * Maneja el evento de clic en el panel "Salir". Reproduce un sonido
+     * y luego cierra la aplicación.
+     */
     private void PanelSalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelSalirMouseClicked
         try {
             InputStream audioStream = getClass().getResourceAsStream("/autonoma/deadlycode/sounds/voicy_Errrrrr.wav");
@@ -417,7 +453,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             dispose();
         }
     }//GEN-LAST:event_PanelSalirMouseClicked
-
+    // Variables de la interfaz gráfica generadas por el editor de GUI
+    // (NetBeans u otro IDE con diseñador visual)
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ComandoGuioneslbl;
     private javax.swing.JLabel Jugartxt;

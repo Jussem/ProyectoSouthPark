@@ -21,12 +21,23 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 /**
- *
- * @author Asus
+ * Clase que representa la ventana de combate del juego.
+ * El jugador se enfrenta a tres enemigos en diferentes fases:
+ * Programador Junior, Programador Senior y Arquitecto.
+ * 
+ * Administra turnos, ataques, interfaz gráfica, música de fondo
+ * y transición entre fases o finalización del juego.
+ * 
+ * @author Juan Sebastian Lopez Guzman
+ * @author Cristian Camilo Salazar Arenas
+ * @author Juan Jose Morales
+ * @version 1.0
+ * @since 2025
  */
 public class VentanaPelea extends javax.swing.JDialog {
     private Clip musicaFondo;
 
+    // Rutas de los fondos y enemigos por fase
     private final String[] fondos = {
         "/autonoma/deadlycode/images/fondoPelea1.jpg",
         "/autonoma/deadlycode/images/fondoPelea2.jpg",
@@ -44,7 +55,13 @@ public class VentanaPelea extends javax.swing.JDialog {
     private Personaje[] enemigosFases;
     private Personaje enemigoActual;
     private boolean turnoJugador = true;
-    
+
+    /**
+     * Constructor principal.
+     * @param parent la ventana padre
+     * @param modal si la ventana debe ser modal
+     * @param jugador el jugador que participa en la pelea
+     */
     public VentanaPelea(java.awt.Frame parent, boolean modal, JugadorCartman jugador) {
         super(parent, modal);
         initComponents();
@@ -54,8 +71,11 @@ public class VentanaPelea extends javax.swing.JDialog {
         inicializarEnemigos();
         cargarFase(faseActual);
         lblJugador.requestFocusInWindow();
-        
     }
+
+    /**
+     * Inicia la música de fondo en bucle con un volumen reducido.
+     */
     private void iniciarMusicaFondo() {
         try {
             InputStream audioStream = getClass().getResourceAsStream("/autonoma/deadlycode/sounds/musica_fondo_3.wav");
@@ -63,19 +83,26 @@ public class VentanaPelea extends javax.swing.JDialog {
             musicaFondo = AudioSystem.getClip();
             musicaFondo.open(ais);
             FloatControl gainControl = (FloatControl) musicaFondo.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-20.0f);
+            gainControl.setValue(-20.0f); // Baja el volumen
             musicaFondo.loop(Clip.LOOP_CONTINUOUSLY);
         } catch (Exception e) {
             System.err.println("Error al cargar música de fondo: " + e.getMessage());
         }
     }
 
+    /**
+     * Detiene y cierra la música de fondo si está en reproducción.
+     */
     private void detenerMusica() {
         if (musicaFondo != null && musicaFondo.isRunning()) {
             musicaFondo.stop();
             musicaFondo.close();
         }
     }
+
+    /**
+     * Inicializa los enemigos para cada una de las fases.
+     */
     private void inicializarEnemigos() {
         enemigosFases = new Personaje[]{
             new ProgramadorJunior(420, 170, 100, 100, Color.BLUE),
@@ -83,12 +110,17 @@ public class VentanaPelea extends javax.swing.JDialog {
             new Arquitecto(420, 170, 150, 150, Color.RED)
         };
     }
+
+    /**
+     * Alterna el turno entre jugador y enemigo. Ejecuta el ataque enemigo
+     * si no es turno del jugador.
+     */
     private void cambiarTurno() {
         turnoJugador = !turnoJugador;
         actualizarEstado();
 
         if (!turnoJugador) {
-            lblJugador.setEnabled(false);//Lo que hace que cambie de color (gris/blanquecino)
+            lblJugador.setEnabled(false); // Visualmente gris
 
             Timer timer = new Timer(1500, e -> {
                 turnoEnemigo();
@@ -99,27 +131,24 @@ public class VentanaPelea extends javax.swing.JDialog {
             timer.start();
         }
     }
+
+    /**
+     * Carga la fase correspondiente: fondo, enemigo y estado inicial.
+     * @param fase número de fase (0 a 2)
+     */
     private void cargarFase(int fase) {
         enemigoActual = enemigosFases[fase];
         lblFondo.setIcon(new ImageIcon(getClass().getResource(fondos[fase])));
-
-        // Cargar imagen del enemigo
-        ImageIcon iconoEnemigo = new ImageIcon(getClass().getResource(enemigos[fase]));
-        lblEnemigo.setIcon(iconoEnemigo);
-
-        // Ajustar tamaño y posición
-        lblEnemigo.setSize(iconoEnemigo.getIconWidth(), iconoEnemigo.getIconHeight());
+        lblEnemigo.setIcon(new ImageIcon(getClass().getResource(enemigos[fase])));
+        lblEnemigo.setSize(lblEnemigo.getIcon().getIconWidth(), lblEnemigo.getIcon().getIconHeight());
         lblEnemigo.setLocation(420, 170);
 
-        // Mostrar mensaje de nueva fase
-        String nombreEnemigo = "";
-        if (fase == 0) {
-            nombreEnemigo = "Programador Junior";
-        } else if (fase == 1) {
-            nombreEnemigo = "Programador Senior";
-        } else if (fase == 2) {
-            nombreEnemigo = "Arquitecto";
-        }
+        String nombreEnemigo = switch (fase) {
+            case 0 -> "Programador Junior";
+            case 1 -> "Programador Senior";
+            case 2 -> "Arquitecto";
+            default -> "Desconocido";
+        };
 
         JOptionPane.showMessageDialog(this,
                 "¡Nueva fase! Enfrentando a: " + nombreEnemigo,
@@ -128,24 +157,36 @@ public class VentanaPelea extends javax.swing.JDialog {
 
         actualizarEstado();
     }
+
+    /**
+     * Avanza a la siguiente fase del juego o finaliza si ya se vencieron los tres enemigos.
+     */
     public void siguienteFase() {
         faseActual++;
-    if (faseActual < 3) {
-        this.dispose();
-        VentanaMundo mundo = new VentanaMundo(null, true, jugador); // 👈 Pasamos el mismo jugador
-        mundo.setLocationRelativeTo(null);
-        mundo.setVisible(true);
-    } else {
-        JOptionPane.showMessageDialog(this, "¡Has ganado el juego!");
-        this.dispose();
+        if (faseActual < 3) {
+            this.dispose();
+            VentanaMundo mundo = new VentanaMundo(null, true, jugador);
+            mundo.setLocationRelativeTo(null);
+            mundo.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "¡Has ganado el juego!");
+            this.dispose();
+        }
     }
-    }
+
+    /**
+     * Muestra la vida actual del enemigo en un cuadro de diálogo.
+     */
     private void mostrarEstado() {
-        JOptionPane.showMessageDialog(this, 
-            "Vida del enemigo: " + enemigoActual.getVida(), 
-            "Estado", 
+        JOptionPane.showMessageDialog(this,
+            "Vida del enemigo: " + enemigoActual.getVida(),
+            "Estado",
             JOptionPane.INFORMATION_MESSAGE);
     }
+
+    /**
+     * Actualiza la información visual del estado de la batalla (vida, turno, recursos).
+     */
     private void actualizarEstado() {
         String mensaje = String.format(
                 "Turno: %s | Vida Jugador: %d | Vida Enemigo: %d | %nPociones: %d | HolaMundo: %d",
@@ -157,23 +198,26 @@ public class VentanaPelea extends javax.swing.JDialog {
         );
         lblEstado.setText(mensaje);
     }
+
+    /**
+     * Ejecuta el turno del enemigo según su tipo.
+     * Cada tipo tiene un ataque especial que afecta al jugador.
+     * Si la vida del jugador llega a cero, termina el juego.
+     */
     private void turnoEnemigo() {
-        if (enemigoActual instanceof ProgramadorJunior) {
-            ProgramadorJunior junior = (ProgramadorJunior) enemigoActual;
+        if (enemigoActual instanceof ProgramadorJunior junior) {
             junior.documentacionJava(jugador);
             JOptionPane.showMessageDialog(this,
                     "¡El Programador Junior te ataca con Documentación Java!",
                     "Ataque Enemigo",
                     JOptionPane.WARNING_MESSAGE);
-        } else if (enemigoActual instanceof ProgramadorSenior) {
-            ProgramadorSenior senior = (ProgramadorSenior) enemigoActual;
+        } else if (enemigoActual instanceof ProgramadorSenior senior) {
             senior.bugs(jugador);
             JOptionPane.showMessageDialog(this,
                     "¡El Programador Senior te ataca con Bugs!",
                     "Ataque Enemigo",
                     JOptionPane.WARNING_MESSAGE);
-        } else if (enemigoActual instanceof Arquitecto) {
-            Arquitecto arquitecto = (Arquitecto) enemigoActual;
+        } else if (enemigoActual instanceof Arquitecto arquitecto) {
             arquitecto.arbolRojinegro(jugador);
             JOptionPane.showMessageDialog(this,
                     "¡El Arquitecto te ataca con Árbol Rojinegro!",
@@ -190,7 +234,7 @@ public class VentanaPelea extends javax.swing.JDialog {
                     JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         } else {
-            turnoJugador = true; 
+            turnoJugador = true;
             actualizarEstado();
         }
     }
@@ -266,7 +310,20 @@ public class VentanaPelea extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    /**
+ * Maneja los eventos de teclado del jugador durante su turno.
+ * 
+ * Teclas disponibles:
+ * - Z: Ataque normal al enemigo.
+ * - X: Ataque especial "HolaMundo" (requiere usos disponibles).
+ * - H: Cura con poción (requiere al menos una poción).
+ * 
+ * Si no es el turno del jugador, se muestra un mensaje de advertencia.
+ * Si el ataque elimina al enemigo, avanza a la siguiente fase.
+ * Si la acción fue válida y el enemigo sobrevive, cambia el turno.
+ * 
+ * @param evt el evento de teclado capturado
+ */
     private void lblJugadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lblJugadorKeyPressed
         if (!turnoJugador || !lblJugador.isEnabled()) {
             JOptionPane.showMessageDialog(this,

@@ -18,88 +18,137 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 /**
- *
- * @author Asus
+ * Ventana del mundo principal del juego, donde el jugador se desplaza e interactúa
+ * con los enemigos antes de entrar en batalla.
+ * Controla la música de fondo, la posición del jugador, las peleas activas
+ * y efectos visuales.
+ * 
+ * Extiende de {@code javax.swing.JDialog}.
+ * 
+ * @author Juan Sebastian Lopez Guzman
+ * @author Cristian Camilo Salazar Arenas
+ * @author Juan Jose Morales
+ * @version 1.0
+ * @since 2025
  */
 public class VentanaMundo extends javax.swing.JDialog {
 
+    /** Clip de sonido que representa la música de fondo del mundo */
     private Clip musicaFondo;
+
+    /** Campo de batalla que contiene al jugador y gestiona el estado del juego */
     CampoDeBatalla campo;
+
+    /** Lista de enemigos presentes en el mundo */
     private List<Personaje> enemigos;
+
+    /** Estado de la primera pelea */
     private boolean pelea1Activa = true;
+
+    /** Estado de la segunda pelea */
     private boolean pelea2Activa = true;
+
+    /** Estado de la tercera pelea */
     private boolean pelea3Activa = true;
-    
-    public VentanaMundo(java.awt.Frame parent, boolean modal,JugadorCartman jugador) {
+
+    /**
+     * Constructor de la ventana del mundo. Inicializa el campo de batalla,
+     * configura la música de fondo, recupera el estado de las peleas del jugador
+     * y ajusta la interfaz gráfica.
+     * 
+     * @param parent Ventana padre
+     * @param modal Indica si la ventana es modal
+     * @param jugador Instancia del jugador a posicionar en el mundo
+     */
+    public VentanaMundo(java.awt.Frame parent, boolean modal, JugadorCartman jugador) {
         super(parent, modal);
-    try {
-        String rutaArchivo = "src/autonoma/deadlycode/models/puntajes.txt";
-        this.campo = new CampoDeBatalla(rutaArchivo);
-        this.campo.setJugador(jugador);
-    } catch (IOException ex) {
-        Logger.getLogger(VentanaMundo.class.getName()).log(Level.SEVERE, null, ex);
-        JOptionPane.showMessageDialog(this, "Error al crear/cargar el archivo de puntajes",
-                "Error", JOptionPane.ERROR_MESSAGE);
-    }
+        try {
+            String rutaArchivo = "src/autonoma/deadlycode/models/puntajes.txt";
+            this.campo = new CampoDeBatalla(rutaArchivo);
+            this.campo.setJugador(jugador);
+        } catch (IOException ex) {
+            Logger.getLogger(VentanaMundo.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Error al crear/cargar el archivo de puntajes",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
         initComponents();
         iniciarMusicaFondo();
 
-    
-    this.pelea1Activa = jugador.isPelea1Activa();
-    this.pelea2Activa = jugador.isPelea2Activa();
-    this.pelea3Activa = jugador.isPelea3Activa();
+        // Sincroniza el estado de las peleas con el jugador
+        this.pelea1Activa = jugador.isPelea1Activa();
+        this.pelea2Activa = jugador.isPelea2Activa();
+        this.pelea3Activa = jugador.isPelea3Activa();
 
-    lblJugador.setFocusable(false);
-    lblJugador.removeKeyListener(lblJugador.getKeyListeners()[0]);
-    pnlJugador.setFocusable(true);
-    pnlJugador.requestFocusInWindow();
-    pnlJugador.setLocation(jugador.getPosX(), jugador.getPosY());
+        lblJugador.setFocusable(false);
+        lblJugador.removeKeyListener(lblJugador.getKeyListeners()[0]);
+        pnlJugador.setFocusable(true);
+        pnlJugador.requestFocusInWindow();
+        pnlJugador.setLocation(jugador.getPosX(), jugador.getPosY());
 
-    lblPelea1.setVisible(pelea1Activa);
-    lblPelea2.setVisible(pelea2Activa);
-    lblPelea3.setVisible(pelea3Activa);
+        // Configura visibilidad de enemigos
+        lblPelea1.setVisible(pelea1Activa);
+        lblPelea2.setVisible(pelea2Activa);
+        lblPelea3.setVisible(pelea3Activa);
 
-    iniciarAnimacionParpadeo();
+        iniciarAnimacionParpadeo();
     }
 
+    /**
+     * Verifica si el jugador se encuentra cerca de un enemigo
+     * y si dicha pelea está activa.
+     * 
+     * @param enemigo JLabel que representa visualmente al enemigo
+     * @return {@code true} si el jugador está dentro del rango de colisión con el enemigo
+     */
     private boolean estaSobreEnemigo(javax.swing.JLabel enemigo) {
-    if ((enemigo == lblPelea1 && !pelea1Activa) ||
-        (enemigo == lblPelea2 && !pelea2Activa) ||
-        (enemigo == lblPelea3 && !pelea3Activa)) {
-        return false;
+        if ((enemigo == lblPelea1 && !pelea1Activa) ||
+            (enemigo == lblPelea2 && !pelea2Activa) ||
+            (enemigo == lblPelea3 && !pelea3Activa)) {
+            return false;
+        }
+
+        int jugadorX = pnlJugador.getX() + pnlJugador.getWidth() / 2;
+        int jugadorY = pnlJugador.getY() + pnlJugador.getHeight() / 2;
+        int enemigoX = enemigo.getX() + enemigo.getWidth() / 2;
+        int enemigoY = enemigo.getY() + enemigo.getHeight() / 2;
+        int rango = 50;
+
+        return Math.abs(jugadorX - enemigoX) < rango && Math.abs(jugadorY - enemigoY) < rango;
     }
 
-    int jugadorX = pnlJugador.getX() + pnlJugador.getWidth() / 2;
-    int jugadorY = pnlJugador.getY() + pnlJugador.getHeight() / 2;
-    int enemigoX = enemigo.getX() + enemigo.getWidth() / 2;
-    int enemigoY = enemigo.getY() + enemigo.getHeight() / 2;
-    int rango = 50;
-
-    return Math.abs(jugadorX - enemigoX) < rango && Math.abs(jugadorY - enemigoY) < rango;
-}
-
-
-    
+    /**
+     * Inicia la música de fondo del mundo cargando el archivo de sonido
+     * y reproduciéndolo en bucle con volumen reducido.
+     */
     private void iniciarMusicaFondo() {
         try {
             InputStream audioStream = getClass().getResourceAsStream("/autonoma/deadlycode/sounds/musica_fondo_2.wav");
             AudioInputStream ais = AudioSystem.getAudioInputStream(audioStream);
             musicaFondo = AudioSystem.getClip();
             musicaFondo.open(ais);
+
+            // Control de volumen
             FloatControl gainControl = (FloatControl) musicaFondo.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-15.0f);
+            gainControl.setValue(-15.0f); // Volumen reducido
+
             musicaFondo.loop(Clip.LOOP_CONTINUOUSLY);
         } catch (Exception e) {
             System.err.println("Error al cargar música de fondo: " + e.getMessage());
         }
     }
 
-    private void detenerMusica(){
+    /**
+     * Detiene y libera los recursos del clip de música si está en reproducción.
+     */
+    private void detenerMusica() {
         if (musicaFondo != null && musicaFondo.isRunning()) {
             musicaFondo.stop();
             musicaFondo.close();
         }
     }
+
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -180,7 +229,13 @@ public class VentanaMundo extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+    /**
+     * Evento que maneja la pulsación de teclas sobre el componente lblJugador.
+     * Se utiliza principalmente para mover al jugador hacia la izquierda o derecha,
+     * o salir del juego presionando la tecla 'Q'.
+     *
+     * @param evt Evento de teclado generado
+     */
     private void lblJugadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lblJugadorKeyPressed
         try {
             switch (evt.getKeyCode()) {
@@ -201,7 +256,13 @@ public class VentanaMundo extends javax.swing.JDialog {
             Logger.getLogger(VentanaMundo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_lblJugadorKeyPressed
-
+        /**
+     * Evento que maneja la pulsación de teclas sobre el panel del jugador.
+     * Permite mover al jugador, iniciar pelea con 'T', o salir con 'Q'.
+     * También actualiza el feedback visual al moverse.
+     *
+     * @param evt Evento de teclado generado
+     */
     private void pnlJugadorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pnlJugadorKeyPressed
         try {
             switch (evt.getKeyCode()) {
@@ -230,6 +291,11 @@ public class VentanaMundo extends javax.swing.JDialog {
             Logger.getLogger(VentanaMundo.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_pnlJugadorKeyPressed
+    /**
+     * Inicia una pelea si el jugador está sobre un enemigo y dicha pelea está habilitada.
+     * Las peleas se deben completar en orden (1 → 2 → 3).
+     * Cierra esta ventana, inicia la pelea, y luego vuelve al mundo.
+     */
     private void iniciarPelea() {
     JugadorCartman jugador = campo.getJugador();
 
@@ -258,24 +324,26 @@ public class VentanaMundo extends javax.swing.JDialog {
 
     detenerMusica();
     this.dispose();
-
+    // Inicia ventana de pelea
     VentanaPelea ventanaPelea = new VentanaPelea(null, true, jugador);
     ventanaPelea.setLocationRelativeTo(null);
     ventanaPelea.setVisible(true);
-
+    // Al terminar la pelea, regresa al mundo
     VentanaMundo nuevoMundo = new VentanaMundo(null, true, jugador);
     nuevoMundo.setLocationRelativeTo(null);
     nuevoMundo.setVisible(true);
 }
-
-
-
-
-    
+/**
+     * Cierra la ventana actual y termina la ejecución del programa.
+     */
     private void exitGame() {
         this.dispose(); 
         System.exit(0);
     }
+    /**
+     * Inicia una animación intermitente que mantiene visibles los enemigos activos
+     * mediante un temporizador que se actualiza cada 500 milisegundos.
+     */
     private void iniciarAnimacionParpadeo() {
     Timer timer = new Timer(500, e -> {
         if (pelea1Activa)
@@ -288,10 +356,10 @@ public class VentanaMundo extends javax.swing.JDialog {
     timer.start();
 }
 
-
-
-
-    
+    /**
+     * Actualiza los colores de los enemigos para indicar visualmente si el jugador
+     * está sobre uno de ellos. Verde significa disponible para pelear, rojo no disponible.
+     */
     private void actualizarFeedback() {
     lblPelea1.setForeground(estaSobreEnemigo(lblPelea1) ? Color.GREEN : Color.RED);
     lblPelea2.setForeground(estaSobreEnemigo(lblPelea2) ? Color.GREEN : Color.RED);

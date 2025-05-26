@@ -6,13 +6,10 @@ import autonoma.deadlycode.models.Lector;
 import autonoma.deadlycode.models.LectorArchivoTextoPlano;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import static java.awt.event.KeyEvent.VK_Q;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import static javax.swing.Spring.height;
-import static javax.swing.Spring.width;
 
 /**
  * Representa el área principal de juego donde interactúan el jugador y los enemigos.
@@ -49,7 +46,7 @@ public class CampoDeBatalla {
     
     /**
      * Crea un nuevo campo de batalla con archivo de persistencia de puntajes.
-     * Inicializa las dimensiones predeterminadas (700x500) y puntaje en cero.
+     * Inicializa las dimensiones predeterminadas (1156x500) y puntaje en cero.
      * 
      * @param rutaArchivo Ruta del archivo para guardar los puntajes
      * @throws IOException Si ocurre un error al crear/leer el archivo
@@ -68,6 +65,7 @@ public class CampoDeBatalla {
         this.jugador = new JugadorCartman(32, 130, 120, 170, Color.RED);
         this.jugador.inicializarLimites(this.maxX, this.maxY);
     }
+
     /**
      * Establece los nuevos límites del campo y actualiza los límites
      * de todos los elementos contenidos.
@@ -83,8 +81,8 @@ public class CampoDeBatalla {
         if (this.jugador != null) {
             this.jugador.inicializarLimites(maxX, maxY);
         }
-
     }
+
     /**
      * Procesa los eventos de teclado para controlar al jugador:
      * - Movimiento (teclas direccionales)
@@ -93,7 +91,7 @@ public class CampoDeBatalla {
      * @param e Evento de tecla presionada
      * @throws IOException Si falla la persistencia al terminar
      */
-    public void handleKey(KeyEvent e) throws IOException{
+    public void handleKey(KeyEvent e) throws IOException {
         if (jugador == null) {
             return;
         }
@@ -107,9 +105,9 @@ public class CampoDeBatalla {
                     jugador.curar();
                 }
                 break;
-            
         }
     }
+
     /**
      * Finaliza la partida actual guardando el puntaje y reiniciando
      * el contador para una nueva partida.
@@ -119,11 +117,11 @@ public class CampoDeBatalla {
      */
     public void terminarSimulacion(KeyEvent e) throws IOException {
         if (e.getKeyCode() == KeyEvent.VK_Q) {
-//          detenerPulgas();
             guardarPuntaje(puntaje);
             this.puntaje = 0;
         }
     }
+
     /**
      * Persiste un nuevo puntaje en el archivo histórico,
      * manteniendo solo los 10 mejores puntajes.
@@ -140,7 +138,7 @@ public class CampoDeBatalla {
                 try {
                     puntajes.add(Integer.parseInt(linea.trim()));
                 } catch (NumberFormatException e) {
-                    // Ignorar
+                    // Ignorar líneas inválidas
                 }
             }
         }
@@ -158,6 +156,7 @@ public class CampoDeBatalla {
 
         escritor.escribir(nuevasLineas, archivoPuntajes.getPath());
     }
+
     /**
      * Recupera los puntajes históricos ordenados descendentemente.
      * 
@@ -173,7 +172,7 @@ public class CampoDeBatalla {
                 try {
                     puntajes.add(Integer.parseInt(linea.trim()));
                 } catch (NumberFormatException e) {
-                    // Ignorar
+                    // Ignorar líneas inválidas
                 }
             }
         }
@@ -181,21 +180,33 @@ public class CampoDeBatalla {
         Collections.sort(puntajes, Collections.reverseOrder());
         return puntajes;
     }
+
     /**
      * Incrementa el puntaje actual de la partida.
      * 
      * @param puntos Cantidad a sumar al puntaje
      */
-    public void aumentarPuntaje(int puntos) { 
-        puntaje += puntos; 
-        
+    public void aumentarPuntaje(int puntos) {
+        puntaje += puntos;
     }
+
+    /**
+     * Retorna la instancia actual del jugador principal.
+     *
+     * @return JugadorCartman actual en el campo de batalla
+     */
     public JugadorCartman getJugador() {
         return this.jugador;
     }
-    
+
+    /**
+     * Establece una nueva instancia del jugador y actualiza sus límites
+     * al tamaño actual del campo de batalla.
+     *
+     * @param jugador Nueva instancia de JugadorCartman a usar en el campo
+     */
     public void setJugador(JugadorCartman jugador) {
-    this.jugador = jugador;
-    this.jugador.inicializarLimites(this.maxX, this.maxY); // para respetar los límites
+        this.jugador = jugador;
+        this.jugador.inicializarLimites(this.maxX, this.maxY); // para respetar los límites
+    }
 }
-}   

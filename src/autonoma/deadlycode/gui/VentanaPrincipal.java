@@ -17,9 +17,11 @@ import javax.swing.SwingUtilities;
  * 
  * Esta clase extiende JFrame e incluye interacción gráfica con el usuario.
  * 
- * @author Cristian
+ * @author Juan Sebastian Lopez Guzman
+ * @author Cristian Camilo Salazar Arenas
+ * @author Juan Jose Morales
  * @version 1.0
- * @since 2023
+ * @since 2025
  */
 public class VentanaPrincipal extends javax.swing.JFrame {
     

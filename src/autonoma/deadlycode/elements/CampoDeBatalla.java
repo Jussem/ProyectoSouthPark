@@ -19,7 +19,7 @@ import java.util.Collections;
  * @author Cristian Camilo Salazar Arenas
  * @author Juan Jose Morales
  * @version 1.0
- * @since 2025
+ * @since 2025-05-19
  */
 public class CampoDeBatalla {
         
@@ -123,9 +123,9 @@ public class CampoDeBatalla {
     }
 
     /**
-     * Persiste un nuevo puntaje en el archivo histórico,
-     * manteniendo solo los 10 mejores puntajes.
-     * 
+     * Persiste un nuevo puntaje en el archivo histórico, manteniendo solo los
+     * 10 mejores puntajes ordenados de mayor a menor.
+     *
      * @param nuevoPuntaje Puntaje a guardar
      * @throws IOException Si falla la operación de archivo
      */
@@ -133,27 +133,30 @@ public class CampoDeBatalla {
         ArrayList<String> lineas = lector.leer(archivoPuntajes.getPath());
         ArrayList<Integer> puntajes = new ArrayList<>();
 
+        // Leer puntajes existentes
         for (String linea : lineas) {
             if (!linea.isBlank()) {
                 try {
                     puntajes.add(Integer.parseInt(linea.trim()));
                 } catch (NumberFormatException e) {
-                    // Ignorar líneas inválidas
                 }
             }
         }
 
+        // Agregar nuevo puntaje y ordenar
         puntajes.add(nuevoPuntaje);
+        Collections.sort(puntajes, Collections.reverseOrder());
 
+        // Mantener solo los 10 mejores
         while (puntajes.size() > 10) {
-            puntajes.remove(0);
+            puntajes.remove(puntajes.size() - 1); // Eliminar el menor
         }
 
+        // Escribir al archivo
         ArrayList<String> nuevasLineas = new ArrayList<>();
         for (int p : puntajes) {
             nuevasLineas.add(String.valueOf(p));
         }
-
         escritor.escribir(nuevasLineas, archivoPuntajes.getPath());
     }
 

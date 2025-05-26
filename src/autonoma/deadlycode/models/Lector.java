@@ -25,7 +25,7 @@ public interface Lector {
      * leído.
      * @throws IOException Si ocurre un error durante la operación de lectura
      * del archivo.
-     * @since 2025.05.05
+     * @since 2025-05-19
      */
     public abstract ArrayList<String> leer(String localizacionArchivo) throws IOException;
 }

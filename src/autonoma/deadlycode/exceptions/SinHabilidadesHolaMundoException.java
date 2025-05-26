@@ -1,12 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package autonoma.deadlycode.exceptions;
 
 /**
+ * Excepcion que no le permite al jugador atacar con más HolaMundos
  *
- * @author Asus
+ * @author Juan Sebastian Lopez Guzman, Cristian Camilo Salazar, Juan Jose
+ * Morales
+ * @version 1.0
+ * @since 2025-05-19
  */
 public class SinHabilidadesHolaMundoException extends RuntimeException{
     public SinHabilidadesHolaMundoException(){

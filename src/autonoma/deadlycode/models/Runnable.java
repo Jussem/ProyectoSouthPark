@@ -23,7 +23,7 @@ public interface Runnable {
      * o secuencial, según el uso del programa.
      * </p>
      * 
-     * @since 1.0
+     * @since 2025-05-19
      */
     void run();
 }

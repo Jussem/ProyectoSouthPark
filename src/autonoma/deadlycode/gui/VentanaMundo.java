@@ -29,7 +29,7 @@ import javax.swing.Timer;
  * @author Cristian Camilo Salazar Arenas
  * @author Juan Jose Morales
  * @version 1.0
- * @since 2025
+ * @since 2025-05-19
  */
 public class VentanaMundo extends javax.swing.JDialog {
 
@@ -50,6 +50,12 @@ public class VentanaMundo extends javax.swing.JDialog {
 
     /** Estado de la tercera pelea */
     private boolean pelea3Activa = true;
+    
+    /** Última posición del jugar en el eje x*/
+    private int ultimaPosX;
+    
+    /** Última posición del jugar en el eje y */
+    private int ultimaPosY;
 
     /**
      * Constructor de la ventana del mundo. Inicializa el campo de batalla,
@@ -84,7 +90,58 @@ public class VentanaMundo extends javax.swing.JDialog {
         lblJugador.removeKeyListener(lblJugador.getKeyListeners()[0]);
         pnlJugador.setFocusable(true);
         pnlJugador.requestFocusInWindow();
+
+        // Posicionar al jugador en su última posición o inicial si es nuevo
         pnlJugador.setLocation(jugador.getPosX(), jugador.getPosY());
+
+        // Configura visibilidad de enemigos
+        lblPelea1.setVisible(pelea1Activa);
+        lblPelea2.setVisible(pelea2Activa);
+        lblPelea3.setVisible(pelea3Activa);
+
+        iniciarAnimacionParpadeo();
+    }
+    
+    /**
+     * Constructor alternativo que permite especificar la posición inicial del
+     * jugador.
+     *
+     * @param parent Ventana padre
+     * @param modal Indica si la ventana es modal
+     * @param jugador Instancia del jugador a posicionar en el mundo
+     * @param posX Posición X donde colocar al jugador
+     * @param posY Posición Y donde colocar al jugador
+     */
+    public VentanaMundo(java.awt.Frame parent, boolean modal, JugadorCartman jugador, int posX, int posY) {
+        super(parent, modal);
+        try {
+            String rutaArchivo = "src/autonoma/deadlycode/models/puntajes.txt";
+            this.campo = new CampoDeBatalla(rutaArchivo);
+            this.campo.setJugador(jugador);
+        } catch (IOException ex) {
+            Logger.getLogger(VentanaMundo.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Error al crear/cargar el archivo de puntajes",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        initComponents();
+        iniciarMusicaFondo();
+
+        // Sincroniza el estado de las peleas con el jugador
+        this.pelea1Activa = jugador.isPelea1Activa();
+        this.pelea2Activa = jugador.isPelea2Activa();
+        this.pelea3Activa = jugador.isPelea3Activa();
+
+        lblJugador.setFocusable(false);
+        lblJugador.removeKeyListener(lblJugador.getKeyListeners()[0]);
+        pnlJugador.setFocusable(true);
+        pnlJugador.requestFocusInWindow();
+
+        // CLAVE: Usar las coordenadas especificadas para el PANEL
+        pnlJugador.setLocation(posX, posY);
+        // Y también actualizar el objeto jugador por consistencia
+        jugador.setPosX(posX);
+        jugador.setPosY(posY);
 
         // Configura visibilidad de enemigos
         lblPelea1.setVisible(pelea1Activa);
@@ -147,7 +204,6 @@ public class VentanaMundo extends javax.swing.JDialog {
             musicaFondo.close();
         }
     }
-
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -297,49 +353,57 @@ public class VentanaMundo extends javax.swing.JDialog {
      * Cierra esta ventana, inicia la pelea, y luego vuelve al mundo.
      */
     private void iniciarPelea() {
-    JugadorCartman jugador = campo.getJugador();
+        // Guardar posición actual del PANEL antes de la pelea (esta es la clave)
+        this.ultimaPosX = pnlJugador.getX();
+        this.ultimaPosY = pnlJugador.getY();
 
-    // Sólo permitir la pelea 2 si pelea 1 está terminada (no activa)
-    // Sólo permitir la pelea 3 si pelea 2 está terminada (no activa)
+        // IMPORTANTE: También actualizar la posición en el objeto jugador
+        JugadorCartman jugador = campo.getJugador();
+        jugador.setPosX(this.ultimaPosX);
+        jugador.setPosY(this.ultimaPosY);
 
-    if (estaSobreEnemigo(lblPelea1) && pelea1Activa) {
-        pelea1Activa = false;
-        jugador.setPelea1Activa(false);
-        lblPelea1.setVisible(false);
-    } else if (estaSobreEnemigo(lblPelea2) && pelea2Activa && !jugador.isPelea1Activa()) {
-        pelea2Activa = false;
-        jugador.setPelea2Activa(false);
-        lblPelea2.setVisible(false);
-    } else if (estaSobreEnemigo(lblPelea3) && pelea3Activa && !jugador.isPelea2Activa()) {
-        pelea3Activa = false;
-        jugador.setPelea3Activa(false);
-        lblPelea3.setVisible(false);
-    } else {
-        JOptionPane.showMessageDialog(this,
-            "No puedes iniciar esta pelea aún.",
-            "Acceso denegado",
-            JOptionPane.WARNING_MESSAGE);
-        return;
+        int fasePelea = -1;
+
+        if (estaSobreEnemigo(lblPelea1) && pelea1Activa) {
+            fasePelea = 0;
+            pelea1Activa = false;
+            jugador.setPelea1Activa(false);
+            lblPelea1.setVisible(false);
+        } else if (estaSobreEnemigo(lblPelea2) && pelea2Activa && !jugador.isPelea1Activa()) {
+            fasePelea = 1;
+            pelea2Activa = false;
+            jugador.setPelea2Activa(false);
+            lblPelea2.setVisible(false);
+        } else if (estaSobreEnemigo(lblPelea3) && pelea3Activa && !jugador.isPelea2Activa()) {
+            fasePelea = 2;
+            pelea3Activa = false;
+            jugador.setPelea3Activa(false);
+            lblPelea3.setVisible(false);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "No puedes iniciar esta pelea aún.",
+                    "Acceso denegado",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        detenerMusica();
+        this.dispose();
+
+        // Pasar las coordenadas del panel, no del objeto jugador
+        VentanaPelea ventanaPelea = new VentanaPelea(null, true, jugador, fasePelea, ultimaPosX, ultimaPosY);
+        ventanaPelea.setLocationRelativeTo(null);
+        ventanaPelea.setVisible(true);
     }
-
-    detenerMusica();
-    this.dispose();
-    // Inicia ventana de pelea
-    VentanaPelea ventanaPelea = new VentanaPelea(null, true, jugador);
-    ventanaPelea.setLocationRelativeTo(null);
-    ventanaPelea.setVisible(true);
-    // Al terminar la pelea, regresa al mundo
-    VentanaMundo nuevoMundo = new VentanaMundo(null, true, jugador);
-    nuevoMundo.setLocationRelativeTo(null);
-    nuevoMundo.setVisible(true);
-}
-/**
+    
+    /**
      * Cierra la ventana actual y termina la ejecución del programa.
      */
     private void exitGame() {
         this.dispose(); 
         System.exit(0);
     }
+    
     /**
      * Inicia una animación intermitente que mantiene visibles los enemigos activos
      * mediante un temporizador que se actualiza cada 500 milisegundos.

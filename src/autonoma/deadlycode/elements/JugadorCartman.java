@@ -20,15 +20,15 @@ import javax.imageio.ImageIO;
  * @author Cristian Camilo Salazar Arenas
  * @author Juan Jose Morales
  * @version 1.0
- * @since 2023
+ * @since 2025-05-19
  */
 public class JugadorCartman extends Personaje {
     
     /** Cantidad de pociones de curación disponibles. */
-    public int pocionesRestantes = 3;
+    public int pocionesRestantes = 5;
     
     /** Número de usos disponibles del ataque especial "Hola Mundo". */
-    public int usosHolaMundo = 3;
+    public int usosHolaMundo = 5;
     
     /** Cantidad de píxeles que se mueve Cartman por paso. */
     public static final int STEP = 5;
@@ -62,8 +62,8 @@ public class JugadorCartman extends Personaje {
     public JugadorCartman(int x, int y, int width, int height, Color color) {
         super(x, y, width, height, color);
         this.vida = 100;
-        this.pocionesRestantes = 3;
-        this.usosHolaMundo = 3;
+        this.pocionesRestantes = 5;
+        this.usosHolaMundo = 5;
         cargarImagen();
     }
 
@@ -115,8 +115,6 @@ public class JugadorCartman extends Personaje {
     public void inicializarLimites(int maxX, int maxY) {
         this.maxX = maxX;
         this.maxY = maxY;
-        // this.x = (maxX - width) / 2; // Centrado opcional
-        // this.y = (maxY - height) / 2;
     }
 
     /**
@@ -125,7 +123,7 @@ public class JugadorCartman extends Personaje {
      * @param enemigo Personaje enemigo que recibirá el daño.
      */
     public void atacar(Personaje enemigo) {
-        enemigo.recibirDanio(20);
+        enemigo.recibirDanio(35);
     }
 
     /**
@@ -135,7 +133,7 @@ public class JugadorCartman extends Personaje {
      */
     public void HolaMundo(Personaje enemigo) {
         if (usosHolaMundo > 0) {
-            enemigo.recibirDanio(35);
+            enemigo.recibirDanio(55);
             usosHolaMundo--;
             System.out.println("Usos restantes de HolaMundo: " + usosHolaMundo);
         } else {

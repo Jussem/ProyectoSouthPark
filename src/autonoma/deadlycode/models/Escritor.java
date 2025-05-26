@@ -24,7 +24,7 @@ public interface Escritor {
      * nulo.
      * @throws IOException Si ocurre un error durante la operación de escritura
      * del archivo.
-     * @since 2025.05.05
+     * @since 2025-05-19
      */
     public abstract void escribir(ArrayList<String> archivo, String ruta) throws IOException;
 }

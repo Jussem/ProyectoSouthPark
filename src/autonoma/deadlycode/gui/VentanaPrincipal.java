@@ -21,7 +21,7 @@ import javax.swing.SwingUtilities;
  * @author Cristian Camilo Salazar Arenas
  * @author Juan Jose Morales
  * @version 1.0
- * @since 2025
+ * @since 2025-05-19
  */
 public class VentanaPrincipal extends javax.swing.JFrame {
     
@@ -364,7 +364,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private void PanelJugarMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelJugarMouseExited
         PanelJugar.setBackground(new java.awt.Color(0, 153, 153));
     }//GEN-LAST:event_PanelJugarMouseExited
-/**
+    /**
      * Cambia el color del panel "Salir" al pasar el mouse.
      */
     private void PanelSalirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelSalirMouseEntered
@@ -381,82 +381,123 @@ public class VentanaPrincipal extends javax.swing.JFrame {
      * y luego abre la ventana del mundo del juego.
      */
     private void PanelJugarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelJugarMouseClicked
+        try {
+            // Intenta cargar el archivo de audio desde los recursos del proyecto
+            InputStream audioStream = getClass().getResourceAsStream("/autonoma/deadlycode/sounds/voice_Timmy.wav");
 
-         try {
-        InputStream audioStream = getClass().getResourceAsStream("/autonoma/deadlycode/sounds/voice_Timmy.wav");
-        if (audioStream == null) {
-            JOptionPane.showMessageDialog(this, "Archivo no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        final Clip clip = AudioSystem.getClip();
-        clip.open(AudioSystem.getAudioInputStream(audioStream));
-        FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-        gainControl.setValue(-15.0f);
-        clip.addLineListener(new LineListener() {
-            @Override
-            public void update(LineEvent event) {
-                if (event.getType() == LineEvent.Type.STOP) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            VentanaPrincipal.this.dispose();
-                            detenerMusica();
-                            JugadorCartman jugador = new JugadorCartman(30, 130, 90, 100, java.awt.Color.RED); // 👈
-                            VentanaMundo ventana = new VentanaMundo(VentanaPrincipal.this, true, jugador); // 👈
-                            ventana.setLocationRelativeTo(null);
-                            ventana.setVisible(true);
-                        }
-                    });
-                    clip.close();
-                }
+            // Si el archivo de audio no se encuentra, muestra mensaje de error y termina la ejecución
+            if (audioStream == null) {
+                JOptionPane.showMessageDialog(this, "Archivo no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        });
-        clip.start();
-    } catch (Exception e) {
-        e.printStackTrace();
-        dispose();
-        JugadorCartman jugador = new JugadorCartman(30, 130, 90, 100, java.awt.Color.RED); // 👈
-        new VentanaMundo(null, true, jugador).setVisible(true); // 👈
-    }
+
+            // Prepara el clip de audio para reproducción
+            final Clip clip = AudioSystem.getClip();
+            clip.open(AudioSystem.getAudioInputStream(audioStream));
+
+            // Configura el volumen reduciéndolo en 15 decibeles
+            FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-15.0f);
+
+            // Agrega un listener para detectar cuando termina la reproducción del audio
+            clip.addLineListener(new LineListener() {
+                @Override
+                public void update(LineEvent event) {
+                    // Cuando la reproducción se detiene...
+                    if (event.getType() == LineEvent.Type.STOP) {
+                        // Ejecuta en el hilo de interfaz gráfica
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Cierra la ventana actual
+                                VentanaPrincipal.this.dispose();
+                                // Detiene cualquier música de fondo
+                                detenerMusica();
+                                // Crea un nuevo jugador con configuración inicial
+                                JugadorCartman jugador = new JugadorCartman(30, 130, 90, 100, java.awt.Color.RED);
+                                // Crea y muestra la nueva ventana del juego
+                                VentanaMundo ventana = new VentanaMundo(VentanaPrincipal.this, true, jugador);
+                                ventana.setLocationRelativeTo(null);
+                                ventana.setVisible(true);
+                            }
+                        });
+                        // Libera los recursos del clip de audio
+                        clip.close();
+                    }
+                }
+            });
+
+            // Inicia la reproducción del audio
+            clip.start();
+
+        } catch (Exception e) {
+            // En caso de cualquier error durante el proceso...
+            e.printStackTrace();
+            // Cierra la ventana actual
+            dispose();
+            // Crea un nuevo jugador con configuración inicial (fallback)
+            JugadorCartman jugador = new JugadorCartman(30, 130, 90, 100, java.awt.Color.RED);
+            // Crea y muestra la nueva ventana del juego (fallback)
+            new VentanaMundo(null, true, jugador).setVisible(true);
+        }
     }//GEN-LAST:event_PanelJugarMouseClicked
-                                  
     /**
      * Maneja el evento de clic en el panel "Salir". Reproduce un sonido
      * y luego cierra la aplicación.
      */
     private void PanelSalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PanelSalirMouseClicked
         try {
+            // Intenta cargar el archivo de sonido desde los recursos internos del proyecto
             InputStream audioStream = getClass().getResourceAsStream("/autonoma/deadlycode/sounds/voicy_Errrrrr.wav");
+
+            // Verifica si el archivo de audio fue encontrado
             if (audioStream == null) {
+                // Muestra mensaje de error si el archivo no existe
                 JOptionPane.showMessageDialog(this, "Archivo no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
+                return;  // Sale del método si no hay archivo de audio
             }
+
+            // Prepara el clip de audio para reproducción
             final Clip clip = AudioSystem.getClip();
+            // Abre el flujo de audio como InputStream
             clip.open(AudioSystem.getAudioInputStream(audioStream));
+
+            // Configura el control de volumen del clip
             FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            // Reduce el volumen en 15 decibeles
             gainControl.setValue(-15.0f);
+
+            // Agrega un listener para detectar eventos del clip de audio
             clip.addLineListener(new LineListener() {
                 @Override
                 public void update(LineEvent event) {
+                    // Cuando la reproducción se detiene...
                     if (event.getType() == LineEvent.Type.STOP) {
+                        // Ejecuta en el hilo de la interfaz gráfica (EDT)
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
+                                // Cierra la ventana principal
                                 VentanaPrincipal.this.dispose();
                             }
                         });
+                        // Libera los recursos del clip de audio
                         clip.close();
                     }
                 }
             });
+
+            // Inicia la reproducción del sonido
             clip.start();
+
         } catch (Exception e) {
+            // Manejo de errores: imprime el stack trace en consola
             e.printStackTrace();
+            // Asegura que la ventana se cierre incluso si hay errores
             dispose();
         }
     }//GEN-LAST:event_PanelSalirMouseClicked
-    // Variables de la interfaz gráfica generadas por el editor de GUI
-    // (NetBeans u otro IDE con diseñador visual)
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel ComandoGuioneslbl;
     private javax.swing.JLabel Jugartxt;

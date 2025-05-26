@@ -1,16 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
 package autonoma.deadlycode.gui;
 
 import autonoma.deadlycode.elements.Arquitecto;
+import autonoma.deadlycode.elements.CampoDeBatalla;
 import autonoma.deadlycode.elements.JugadorCartman;
 import autonoma.deadlycode.elements.Personaje;
 import autonoma.deadlycode.elements.ProgramadorJunior;
 import autonoma.deadlycode.elements.ProgramadorSenior;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.io.InputStream;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -32,45 +30,63 @@ import javax.swing.Timer;
  * @author Cristian Camilo Salazar Arenas
  * @author Juan Jose Morales
  * @version 1.0
- * @since 2025
+ * @since 2025-05-19
  */
 public class VentanaPelea extends javax.swing.JDialog {
+    
+    // Clip para la música de fondo del combate
     private Clip musicaFondo;
 
-    // Rutas de los fondos y enemigos por fase
+    // Rutas de recursos gráficos organizados por fases
     private final String[] fondos = {
-        "/autonoma/deadlycode/images/fondoPelea1.jpg",
-        "/autonoma/deadlycode/images/fondoPelea2.jpg",
-        "/autonoma/deadlycode/images/fondoPelea3.jpg"
+        "/autonoma/deadlycode/images/fondoPelea1.jpg", // Fase 1: Junior
+        "/autonoma/deadlycode/images/fondoPelea2.jpg", // Fase 2: Senior
+        "/autonoma/deadlycode/images/fondoPelea3.jpg" // Fase 3: Arquitecto
     };
-    
+
     private final String[] enemigos = {
         "/autonoma/deadlycode/images/ProgramadorJunior.png",
         "/autonoma/deadlycode/images/ProgramadorSenior.png",
         "/autonoma/deadlycode/images/Arquitecto.png"
     };
-    
+
+    // Estado actual del combate
     private int faseActual = 0;
+    private CampoDeBatalla campo;
     private JugadorCartman jugador;
     private Personaje[] enemigosFases;
     private Personaje enemigoActual;
     private boolean turnoJugador = true;
+    private int posicionJugadorX;  // Guarda posición X del mundo abierto
+    private int posicionJugadorY;  // Guarda posición Y del mundo abierto
 
     /**
      * Constructor principal.
+     *
      * @param parent la ventana padre
      * @param modal si la ventana debe ser modal
      * @param jugador el jugador que participa en la pelea
+     * @param faseInicial la fase inicial de la pelea
+     * @param posX posición X donde estaba el jugador antes de la pelea
+     * @param posY posición Y donde estaba el jugador antes de la pelea
      */
-    public VentanaPelea(java.awt.Frame parent, boolean modal, JugadorCartman jugador) {
+    public VentanaPelea(java.awt.Frame parent, boolean modal, JugadorCartman jugador, int faseInicial, int posX, int posY) {
         super(parent, modal);
         initComponents();
         iniciarMusicaFondo();
         this.jugador = jugador;
         this.turnoJugador = true;
+        this.faseActual = faseInicial;
+        this.posicionJugadorX = posX;
+        this.posicionJugadorY = posY;
         inicializarEnemigos();
         cargarFase(faseActual);
         lblJugador.requestFocusInWindow();
+        try {
+            this.campo = new CampoDeBatalla("src/autonoma/deadlycode/models/puntajes.txt");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -159,19 +175,47 @@ public class VentanaPelea extends javax.swing.JDialog {
     }
 
     /**
-     * Avanza a la siguiente fase del juego o finaliza si ya se vencieron los tres enemigos.
+     * Avanza a la siguiente fase del juego o finaliza si ya se vencieron los
+     * tres enemigos.
      */
+    
     public void siguienteFase() {
-        faseActual++;
-        if (faseActual < 3) {
-            this.dispose();
-            VentanaMundo mundo = new VentanaMundo(null, true, jugador);
-            mundo.setLocationRelativeTo(null);
-            mundo.setVisible(true);
-        } else {
-            JOptionPane.showMessageDialog(this, "¡Has ganado el juego!");
-            this.dispose();
+        detenerMusica();
+        this.dispose();
+
+        // Calcular puntaje si es victoria final
+        int puntajeFinal = 0;
+        if (faseActual == 2) {
+            puntajeFinal = calcularPuntaje();
+            try {
+                campo.guardarPuntaje(puntajeFinal);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Error al guardar puntaje", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
+
+        // Mensaje de victoria
+        if (faseActual == 2) {
+            String mensaje = "¡HAS GANADO EL JUEGO!\nPuntaje: " + puntajeFinal;
+            JOptionPane.showMessageDialog(null, mensaje, "¡Victoria!", JOptionPane.INFORMATION_MESSAGE);
+            System.exit(0);
+        }
+        
+        // Volver al mundo
+        VentanaMundo nuevoMundo = new VentanaMundo(null, true, jugador, posicionJugadorX, posicionJugadorY);
+        nuevoMundo.setLocationRelativeTo(null);
+        nuevoMundo.setVisible(true);
+
+    }
+
+    private int calcularPuntaje() {
+        int puntaje = jugador.getVida() * 100; // 100 puntos por vida restante
+        puntaje += jugador.pocionesRestantes * 500; // 500 por poción no usada
+        puntaje += jugador.usosHolaMundo * 300; // 300 por habilidad no usada
+        if (faseActual == 2) {
+            puntaje += 7000; // Bonus por vencer al Arquitecto
+        }
+        return puntaje;
     }
 
     /**
@@ -310,7 +354,7 @@ public class VentanaPelea extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    /**
+ /**
  * Maneja los eventos de teclado del jugador durante su turno.
  * 
  * Teclas disponibles:

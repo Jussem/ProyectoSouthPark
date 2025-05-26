@@ -19,7 +19,7 @@ public class LectorArchivoTextoPlano implements Lector {
     /**
      * Lista que almacena las líneas del archivo leído.
      *
-     * @since 2025.05.05
+     * @since 2025-05-19
      */
     private ArrayList<String> archivo;
 
@@ -27,7 +27,7 @@ public class LectorArchivoTextoPlano implements Lector {
      * Codificación de caracteres utilizada para leer el archivo (UTF-8 por
      * defecto).
      *
-     * @since 2025.05.05
+     * @since 2025-05-19
      */
     private Charset charset = Charset.forName("UTF-8");
 
@@ -35,7 +35,7 @@ public class LectorArchivoTextoPlano implements Lector {
      * Constructor que inicializa la lista para almacenar las líneas del
      * archivo.
      *
-     * @since 2025.05.05
+     * @since 2025-05-19
      */
     public LectorArchivoTextoPlano() {
         this.archivo = new ArrayList<>();
@@ -49,7 +49,7 @@ public class LectorArchivoTextoPlano implements Lector {
      * @return ArrayList<String> Lista con todas las líneas del archivo.
      * @throws IOException Si ocurre un error al leer el archivo (no existe, no
      * se puede acceder, etc.).
-     * @since 2025.05.05
+     * @since 2025-05-19
      */
     @Override
     public ArrayList<String> leer(String localizacionArchivo) throws IOException {

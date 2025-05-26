@@ -10,7 +10,7 @@ import java.awt.Color;
  * @author Cristian Camilo Salazar Arenas
  * @author Juan Jose Morales
  * @version 1.0
- * @since 2023
+ * @since 2025-05-19
  */
 public class ProgramadorJunior extends Personaje {
     
@@ -33,10 +33,10 @@ public class ProgramadorJunior extends Personaje {
      * Realiza el ataque especial "Documentación Java" contra un objetivo,
      * infligiendo 15 puntos de daño.
      * 
-     * @param objetivo Personaje que recibirá el daño
+     * @param jugador Personaje que recibirá el daño
      */
     public void documentacionJava(JugadorCartman jugador) {
     int danio = 10; 
     jugador.recibirDanio(danio);
-}
+    }
 }

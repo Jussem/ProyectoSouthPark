@@ -10,7 +10,7 @@ import java.awt.Color;
  * @author Cristian Camilo Salazar Arenas
  * @author Juan Jose Morales
  * @version 1.0
- * @since 2023
+ * @since 2025-05-19
  */
 public class Arquitecto extends Personaje {
     /**
@@ -35,7 +35,7 @@ public class Arquitecto extends Personaje {
      * @param objetivo Personaje que recibirá el daño del ataque
      */
     public void arbolRojinegro(Personaje objetivo) {
-        int danio = 50;
+        int danio = 30;
         objetivo.recibirDanio(danio);
     }
 }

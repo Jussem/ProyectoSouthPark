@@ -11,7 +11,7 @@ import java.awt.Color;
  * @author Cristian Camilo Salazar Arenas
  * @author Juan Jose Morales
  * @version 1.0
- * @since 2023
+ * @since 2025-05-19
  */
 public abstract class Personaje extends Sprite{
  /** Puntos de vida actuales del personaje */

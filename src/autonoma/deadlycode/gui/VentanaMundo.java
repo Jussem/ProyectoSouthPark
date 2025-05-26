@@ -25,6 +25,9 @@ public class VentanaMundo extends javax.swing.JDialog {
     private Clip musicaFondo;
     CampoDeBatalla campo;
     private List<Personaje> enemigos;
+    private boolean pelea1Activa = true;
+    private boolean pelea2Activa = true;
+    private boolean pelea3Activa = true;
     
     public VentanaMundo(java.awt.Frame parent, boolean modal,JugadorCartman jugador) {
         super(parent, modal);
@@ -44,9 +47,19 @@ public class VentanaMundo extends javax.swing.JDialog {
         pnlJugador.setFocusable(true);
         pnlJugador.requestFocusInWindow();
         pnlJugador.setLocation(jugador.getPosX(), jugador.getPosY());
+        
+    if (!jugador.isPelea1Activa()) lblPelea1.setVisible(false);
+    if (!jugador.isPelea2Activa()) lblPelea2.setVisible(false);
+    if (!jugador.isPelea3Activa()) lblPelea3.setVisible(false);
     }
 
     private boolean estaSobreEnemigo(javax.swing.JLabel enemigo) {
+    if ((enemigo == lblPelea1 && !pelea1Activa) ||
+        (enemigo == lblPelea2 && !pelea2Activa) ||
+        (enemigo == lblPelea3 && !pelea3Activa)) {
+        return false;
+    }
+
     int jugadorX = pnlJugador.getX() + pnlJugador.getWidth() / 2;
     int jugadorY = pnlJugador.getY() + pnlJugador.getHeight() / 2;
     int enemigoX = enemigo.getX() + enemigo.getWidth() / 2;
@@ -55,6 +68,7 @@ public class VentanaMundo extends javax.swing.JDialog {
 
     return Math.abs(jugadorX - enemigoX) < rango && Math.abs(jugadorY - enemigoY) < rango;
 }
+
 
     
     private void iniciarMusicaFondo() {
@@ -208,12 +222,30 @@ public class VentanaMundo extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_pnlJugadorKeyPressed
     private void iniciarPelea() {
-        this.dispose();
-        detenerMusica();
-        VentanaPelea ventanaPelea = new VentanaPelea(null, true, campo.getJugador());
-        ventanaPelea.setLocationRelativeTo(null);
-        ventanaPelea.setVisible(true);
+    JugadorCartman jugador = campo.getJugador(); // Obtener jugador actual
+
+    if (estaSobreEnemigo(lblPelea1)) {
+        pelea1Activa = false;
+        jugador.setPelea1Activa(false); // Marca como desactivada permanentemente
+        lblPelea1.setVisible(false);
+    } else if (estaSobreEnemigo(lblPelea2)) {
+        pelea2Activa = false;
+        jugador.setPelea2Activa(false);
+        lblPelea2.setVisible(false);
+    } else if (estaSobreEnemigo(lblPelea3)) {
+        pelea3Activa = false;
+        jugador.setPelea3Activa(false);
+        lblPelea3.setVisible(false);
     }
+
+    this.dispose();
+    detenerMusica();
+    VentanaPelea ventanaPelea = new VentanaPelea(null, true, jugador);
+    ventanaPelea.setLocationRelativeTo(null);
+    ventanaPelea.setVisible(true);
+}
+
+
     private void exitGame() {
         this.dispose(); 
         System.exit(0);

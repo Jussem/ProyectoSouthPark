@@ -35,6 +35,10 @@ public class JugadorCartman extends Personaje {
     
     /** Puntos de vida actuales del jugador */
     private int vida;
+    
+    private boolean pelea1Activa = true;
+    private boolean pelea2Activa = true;
+    private boolean pelea3Activa = true;
 
     /**
      * Crea una nueva instancia del jugador Cartman con posición, tamaño y color específicos.
@@ -160,5 +164,13 @@ public class JugadorCartman extends Personaje {
     public int getVida() {
         return this.vida;
     }
+     public boolean isPelea1Activa() { return pelea1Activa; }
+    public void setPelea1Activa(boolean activa) { this.pelea1Activa = activa; }
+
+    public boolean isPelea2Activa() { return pelea2Activa; }
+    public void setPelea2Activa(boolean activa) { this.pelea2Activa = activa; }
+
+    public boolean isPelea3Activa() { return pelea3Activa; }
+    public void setPelea3Activa(boolean activa) { this.pelea3Activa = activa; }
     
 }
